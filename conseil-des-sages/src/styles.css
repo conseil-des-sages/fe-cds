@@ -1,3 +1,145 @@
 /* You can add global styles to this file, and also import other style files */
 
 @import 'tailwindcss';
+
+
+:root,
+[data-theme='dark'] {
+  color-scheme: dark;
+
+  /* Backdrop gradient: nuit -> violet -> magenta */
+  --bg-1: #0b0e2a;
+  --bg-2: #1b1347;
+  --bg-3: #3a1555;
+  --blob-a: #4338ca;
+  --blob-b: #8b2fd6;
+  --blob-c: #d0307f;
+  --blob-opacity: 0.42;
+
+  /* Glass levels — opacity rises with importance / text length.
+     Level 3 is tinted dark (not white) so long text keeps AA+ contrast. */
+  --glass-1: rgba(255, 255, 255, 0.05);
+  --glass-2: rgba(255, 255, 255, 0.085);
+  --glass-3: rgba(19, 15, 50, 0.74);
+  --glass-4: rgba(15, 12, 40, 0.9);
+  --glass-border: rgba(255, 255, 255, 0.14);
+  --glass-border-strong: rgba(255, 255, 255, 0.24);
+  --glass-highlight: rgba(255, 255, 255, 0.08);
+  --glass-shadow: 0 10px 40px -8px rgba(4, 2, 20, 0.55);
+  --scrim: rgba(8, 6, 28, 0.45);
+
+  /* Text */
+  --text: #f5f3ff;
+  --text-2: #cbc6e8;
+  --text-3: #a9a3d1;
+
+  /* Brand: pearl primary + rose accent (focus, highlights) */
+  --primary: #f5f3ff;
+  --primary-fg: #1a1340;
+  --accent: #f9a8d4;
+
+  /* Sage palette (dark) — all >= 5:1 on glass levels 2-3 */
+  --sage-bleu: #7cb4ff;
+  --sage-orange: #ffa463;
+  --sage-vert: #4bde9e;
+  --sage-rouge: #ff8089;
+  --sage-violet: #c9a5ff;
+  --sage-cyan: #5fdde5;
+  --sage-rose: #ff92cc;
+  --sage-ambre: #f4c752;
+}
+
+[data-theme='light'] {
+  color-scheme: light;
+
+  --bg-1: #eef0ff;
+  --bg-2: #f2eaff;
+  --bg-3: #fde8f3;
+  --blob-a: #a5b4fc;
+  --blob-b: #d8b4fe;
+  --blob-c: #f9a8d4;
+  --blob-opacity: 0.6;
+
+  --glass-1: rgba(255, 255, 255, 0.32);
+  --glass-2: rgba(255, 255, 255, 0.52);
+  --glass-3: rgba(255, 255, 255, 0.8);
+  --glass-4: rgba(255, 255, 255, 0.92);
+  --glass-border: rgba(255, 255, 255, 0.75);
+  --glass-border-strong: rgba(255, 255, 255, 0.95);
+  --glass-highlight: rgba(255, 255, 255, 0.6);
+  --glass-shadow: 0 10px 40px -10px rgba(76, 52, 140, 0.22);
+  --scrim: rgba(230, 224, 250, 0.4);
+
+  --text: #17132e;
+  --text-2: #3e3960;
+  --text-3: #575273;
+
+  --primary: #1f1a3d;
+  --primary-fg: #ffffff;
+  --accent: #b0185a;
+
+  --sage-bleu: #1c58bd;
+  --sage-orange: #9a4506;
+  --sage-vert: #036a4a;
+  --sage-rouge: #be2533;
+  --sage-violet: #7136d9;
+  --sage-cyan: #0b6b7c;
+  --sage-rose: #b0185a;
+  --sage-ambre: #7f5606;
+}
+
+:root {
+  --font-display: 'Fraunces', 'Iowan Old Style', Georgia, serif;
+  --font-body: 'Atkinson Hyperlegible Next', 'Atkinson Hyperlegible', system-ui, sans-serif;
+
+  --r-sm: 12px;
+  --r-md: 18px;
+  --r-lg: 26px;
+  --r-xl: 34px;
+  --r-pill: 999px;
+
+  --blur-1: 14px;
+  --blur-2: 22px;
+  --blur-3: 30px;
+
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* ---------- Base ---------- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  background: var(--bg-1);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+body {
+  margin: 0;
+  min-height: 100dvh;
+}
+
+.glass {
+  background: rgba(255, 255, 255, 0.08);
+
+  backdrop-filter: blur(16px) saturate(160%);
+  -webkit-backdrop-filter: blur(16px) saturate(160%); 
+
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 20px;
+
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15);
+
+  padding: 24px;
+  color: #fff;
+}

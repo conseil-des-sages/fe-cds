@@ -1,8 +1,10 @@
 import { Component, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+import { BackdropComponent } from './ui/backdrop-components';
+import { Navbar } from './components/navbar/navbar';
 
 @Component({
-  imports: [RouterOutlet],
+  imports: [RouterOutlet, BackdropComponent],
   selector: 'app-root',
   styleUrl: './app.css',
   templateUrl: './app.html',
