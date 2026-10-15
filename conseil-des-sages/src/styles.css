@@ -1,8 +1,14 @@
-/* You can add global styles to this file, and also import other style files */
-
+@layer ng-icon, theme, base, components, utilities;
 @import 'tailwindcss';
+@import './app/shared/core/css/zard';
+@plugin "tailwindcss-animate";
 
+/* Dark = défaut (aucun data-theme) ou data-theme="dark". Light = data-theme="light" sur <html>. */
+@custom-variant dark (&:where(:root:not([data-theme='light']), :root:not([data-theme='light']) *));
 
+/* =====================================================================
+   1. TES TOKENS (source de vérité du design)
+   ===================================================================== */
 :root,
 [data-theme='dark'] {
   color-scheme: dark;
@@ -33,10 +39,11 @@
   --text-2: #cbc6e8;
   --text-3: #a9a3d1;
 
-  /* Brand: pearl primary + rose accent (focus, highlights) */
+  /* Brand: pearl primary + rose accent (focus, highlights)
+     --accent est renommé --brand-accent : Zard utilise --accent pour les fonds de survol. */
   --primary: #f5f3ff;
   --primary-fg: #1a1340;
-  --accent: #f9a8d4;
+  --brand-accent: #f9a8d4;
 
   /* Sage palette (dark) — all >= 5:1 on glass levels 2-3 */
   --sage-bleu: #7cb4ff;
@@ -76,7 +83,7 @@
 
   --primary: #1f1a3d;
   --primary-fg: #ffffff;
-  --accent: #b0185a;
+  --brand-accent: #b0185a;
 
   --sage-bleu: #1c58bd;
   --sage-orange: #9a4506;
@@ -103,43 +110,145 @@
   --blur-3: 30px;
 
   --ease: cubic-bezier(0.22, 1, 0.36, 1);
+
+  --radius: var(--r-sm);
 }
 
-/* ---------- Base ---------- */
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
+/* =====================================================================
+   2. PONT TOKENS ZARD UI -> TES TOKENS
+   Déclaré sur chaque sélecteur de thème pour que les var() se
+   recalculent au changement de data-theme.
+   ===================================================================== */
+:root,
+[data-theme='dark'],
+[data-theme='light'] {
+  --background: var(--bg-1);
+  --foreground: var(--text);
+
+  --card: var(--glass-2);
+  --card-foreground: var(--text);
+  --popover: var(--glass-4);
+  --popover-foreground: var(--text);
+
+  /* --primary est déjà défini ci-dessus (perle) */
+  --primary-foreground: var(--primary-fg);
+  --secondary: var(--glass-2);
+  --secondary-foreground: var(--text);
+  --muted: var(--glass-1);
+  --muted-foreground: var(--text-3);
+
+  /* Zard : fond de survol/sélection discret (pas ton rose) */
+  --accent: var(--glass-2);
+  --accent-foreground: var(--text);
+
+  --destructive: var(--sage-rouge);
+  --destructive-foreground: var(--primary-fg);
+
+  --border: var(--glass-border);
+  --input: var(--glass-border-strong);
+  --ring: var(--brand-accent);
+
+  --chart-1: var(--sage-bleu);
+  --chart-2: var(--sage-violet);
+  --chart-3: var(--sage-rose);
+  --chart-4: var(--sage-ambre);
+  --chart-5: var(--sage-vert);
+
+  --sidebar: var(--glass-3);
+  --sidebar-foreground: var(--text);
+  --sidebar-primary: var(--primary);
+  --sidebar-primary-foreground: var(--primary-fg);
+  --sidebar-accent: var(--glass-2);
+  --sidebar-accent-foreground: var(--text);
+  --sidebar-border: var(--glass-border);
+  --sidebar-ring: var(--brand-accent);
 }
 
-html {
-  background: var(--bg-1);
-  color: var(--text);
-  font-family: var(--font-body);
-  font-size: 16px;
-  line-height: 1.55;
-  -webkit-font-smoothing: antialiased;
-  text-rendering: optimizeLegibility;
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+
+  /* Tes tokens exposés comme classes Tailwind : text-brand-accent, bg-sage-bleu, font-heading... */
+  --color-brand-accent: var(--brand-accent);
+  --color-sage-bleu: var(--sage-bleu);
+  --color-sage-orange: var(--sage-orange);
+  --color-sage-vert: var(--sage-vert);
+  --color-sage-rouge: var(--sage-rouge);
+  --color-sage-violet: var(--sage-violet);
+  --color-sage-cyan: var(--sage-cyan);
+  --color-sage-rose: var(--sage-rose);
+  --color-sage-ambre: var(--sage-ambre);
+  --font-sans: var(--font-body);
+  --font-heading: var(--font-display);
 }
 
-body {
-  margin: 0;
-  min-height: 100dvh;
-}
+/* =====================================================================
+   3. BASE (Zard + tes règles)
+   ===================================================================== */
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
 
-.glass {
-  background: rgba(255, 255, 255, 0.08);
+  html {
+    background: var(--bg-1);
+    color: var(--text);
+    font-family: var(--font-body);
+    font-size: 16px;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
 
-  backdrop-filter: blur(16px) saturate(160%);
-  -webkit-backdrop-filter: blur(16px) saturate(160%); 
+  /* Pas de bg-background ici : le fond dégradé du backdrop doit rester visible */
+  body {
+    @apply text-foreground;
+    margin: 0;
+    min-height: 100dvh;
+  }
 
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  border-radius: 20px;
+  input[type='number']::-webkit-inner-spin-button,
+  input[type='number']::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
 
-  box-shadow:
-    0 8px 32px rgba(0, 0, 0, 0.35),
-    inset 0 1px 0 rgba(255, 255, 255, 0.15);
-
-  padding: 24px;
-  color: #fff;
+  input[type='number'] {
+    -moz-appearance: textfield;
+    appearance: textfield;
+  }
 }
