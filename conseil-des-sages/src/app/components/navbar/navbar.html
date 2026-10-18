@@ -1,23 +1,31 @@
 <header class="fixed md:w-10/12 inset-x-0 mx-auto my-5 z-40">
 
   <!-- Partie Ordinateur -->
-  <div class="hidden md:flex items-center glass px-4 md:px-6 py-3 md:py-4">
-    <div class="w-1/2">
+  <div class="hidden md:flex items-center glass px-4 md:px-6 py-2">
+    <div class="w-1/2 flex flex-row items-center gap-3">
       <img src="logo.png" alt="Conseil des Sages" class="h-8 md:h-12 items-center -my-2 md:-my-4 w-auto">
+      <h1 class="brand">Conseil des Sages</h1>
     </div>
 
-    <nav aria-label="Navigation principale" class="w-1/2 flex justify-center gap-8">
+    <div class="flex-1 flex flex-row justify-center">
+    <nav aria-label="Navigation principale" class="flex justify-center gap-8">
       @for (link of links; track link.path) {
-        <a [routerLink]="link.path" routerLinkActive="text-pink-300" class="nav-link">{{ link.label }}</a>
+        <a [routerLink]="link.path" routerLinkActive="active" class="nav-link">{{ link.label }}</a>
       }
     </nav>
+
+    <div class="flex-1 flex flex-row justify-end items-center gap-4" [style.--i]="links.length">
+        <app-theme-toggle></app-theme-toggle>
+        <button type="button" z-button routerLink="/connexion" (click)="close()" class="text-tiny uppercase tracking-[0.12em]"> Connexion <svg lucideArrowUpRight class="size-4" aria-hidden="true"></svg></button>
+    </div>
+    </div>
   </div>
 
   <!-- Partie Téléphone -->
   <div class="md:hidden flex justify-end px-5">
     <button type="button" z-button zSize="icon"
             [attr.data-open]="open()" [attr.aria-expanded]="open()"
-            (click)="toggle()">
+            (click)="toggle()" class="mobile-toggle">
       <span class="relative block size-5">
         <svg lucideMenu class="icon icon--menu" aria-hidden="true"></svg>
         <svg lucideX class="icon icon--x" aria-hidden="true"></svg>
@@ -31,26 +39,54 @@
 <div id="mobile-menu" class="fullscreen md:hidden"
      role="dialog" aria-modal="true" aria-label="Menu"
      [attr.data-open]="open()" [attr.inert]="open() ? null : ''">
-     
-    
-  <nav aria-label="Navigation mobile">
-    <ul>
-      @for (link of links; track link.path; let i = $index) {
-        <li class="line" [style.--i]="i">
-          <a [routerLink]="link.path" routerLinkActive="active" (click)="close()" class="link">
-            <span class="line__inner">
-              <small class="num">0{{ i + 1 }}</small>
-              <span class="label">{{ link.label }}</span>
-            </span>
-          </a>
-        </li>
-      }
-    </ul>
-    <div class="line cta mt-8" [style.--i]="links.length">
-        <div class="line__inner">
-            <button type="button" z-button class="w-full" routerLink="/connexion" (click)="close()"> Connexion </button>
+
+    <div class="flex h-1/12 items-start">
+        <div class="flex items-center fade-down">
+            <img src="logo.png" alt="Conseil des Sages" class="h-8 w-auto">
+            <h1 class="brand">Conseil des Sages</h1>
         </div>
     </div>
-   
-  </nav>
+    
+    <div class="flex h-11/12 w-full items-start line">
+        <nav aria-label="Navigation mobile" class="flex-1">
+            <div class="line mb-3">
+                <h2 class="line__inner eyebrow text-tiny" style="--i: -1">Navigation</h2>
+            </div>
+            <ul>
+            @for (link of links; track link.path; let i = $index) {
+                <li class="line" [style.--i]="i">
+                <a [routerLink]="link.path" routerLinkActive="active" (click)="close()" class="link">
+                    <span class="line__inner">
+                    <small class="num text-tiny">0{{ i + 1 }}</small>
+                    <span class="label">{{ link.label }}</span>
+                    </span>
+                </a>
+                </li>
+            }
+            </ul>
+
+            <div class="trait-annim my-10 w-full h-px mx-auto bg-white/30 origin-center"></div>
+
+            <div class="line cta mt-8 inset-0 w-full" [style.--i]="links.length">
+                <div class="line__inner flex flex-row justify-between items-center">
+                    <h2 class="eyebrow text-tiny">Mon compte</h2>
+                    <button type="button" z-button routerLink="/connexion" (click)="close()" class="text-tiny uppercase tracking-[0.12em]"> Connexion <svg lucideArrowUpRight class="size-4" aria-hidden="true"></svg></button>
+                </div>
+            </div>
+
+            <div class="line cta mt-8 inset-0 w-full" [style.--i]="links.length">
+                <div class="line__inner flex flex-row justify-between items-center">
+                  <div class="flex items-center w-1/2">
+                    <h2 class="eyebrow text-tiny">Préferences</h2>
+                  </div>
+                    
+                  <div class="flex w-1/2 items-center justify-center">
+                    <app-theme-toggle></app-theme-toggle>
+                  </div>
+                    
+                </div>
+            </div>
+        
+        </nav>
+    </div>
 </div>

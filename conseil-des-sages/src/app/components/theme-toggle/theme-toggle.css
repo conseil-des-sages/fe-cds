@@ -1,0 +1,29 @@
+.icon{
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    transition: transform 500ms var(--ease), opacity 300ms;
+
+}
+
+
+/* Thème sombre : on voit le soleil (l'action possible), la lune est cachée */
+.icon--moon {
+  opacity: 0;
+  transform: rotate(-90deg) scale(0.4);
+}
+
+/* Thème clair : le soleil part en tournant, la lune arrive */
+button[data-mode='light'] .icon--sun {
+  opacity: 0;
+  transform: rotate(90deg) scale(0.4);
+}
+button[data-mode='light'] .icon--moon {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .icon { transition-duration: 1ms; }
+}
