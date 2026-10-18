@@ -162,6 +162,12 @@
   --sidebar-accent-foreground: var(--text);
   --sidebar-border: var(--glass-border);
   --sidebar-ring: var(--brand-accent);
+
+  --fs-tiny: 0.75rem;                      
+  --fs-small: 0.875rem;                    
+  --fs-medium: 1.125rem;                
+  --fs-large: clamp(1.5rem, 7.0vw, 2rem); 
+  --fs-display: clamp(2.75rem, 13vw, 5rem);
 }
 
 @theme inline {
@@ -214,6 +220,12 @@
   --color-sage-ambre: var(--sage-ambre);
   --font-sans: var(--font-body);
   --font-heading: var(--font-display);
+
+  --text-tiny: var(--fs-tiny);
+  --text-small: var(--fs-small);
+  --text-medium: var(--fs-medium);
+  --text-large: var(--fs-large);
+  --text-display: var(--fs-display);
 }
 
 /* =====================================================================
@@ -251,4 +263,23 @@
     -moz-appearance: textfield;
     appearance: textfield;
   }
+}
+
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+::view-transition-new(root) {
+  animation: theme-reveal 900ms var(--ease) both;
+}
+
+@keyframes theme-reveal {
+  from { clip-path: circle(0 at var(--tx, 50%) var(--ty, 0)); }
+  to   { clip-path: circle(var(--tr, 150%) at var(--tx, 50%) var(--ty, 0)); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-new(root) { animation: none; }
 }

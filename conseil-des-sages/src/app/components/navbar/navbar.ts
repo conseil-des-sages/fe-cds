@@ -2,11 +2,12 @@ import { ZardButtonComponent } from '@/shared/components/button';
 import { DOCUMENT } from '@angular/common';
 import { afterNextRender, Component, DestroyRef, effect, inject, signal } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
-import { LucideMenu, LucideX } from '@lucide/angular';
+import { LucideMenu, LucideX, LucideArrowUpRight } from '@lucide/angular';
+import { ThemeToggle } from '../theme-toggle/theme-toggle';
 
 @Component({
   selector: 'app-navbar',
-  imports: [ZardButtonComponent, RouterLink, RouterLinkActive, LucideMenu, LucideX],
+  imports: [ThemeToggle, ZardButtonComponent, RouterLink, RouterLinkActive, LucideMenu, LucideX, LucideArrowUpRight],
   styleUrl: './navbar.css',
   templateUrl: './navbar.html',
   host: { '(document:keydown.escape)': 'close()' },
