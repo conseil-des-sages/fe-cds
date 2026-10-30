@@ -1,16 +1,347 @@
+/*
+   Voci un sommaire de ce fichier pour que ça soit plus simpel de comprehnsion
+
+   Sommaire
+   1. Variables locales
+   2. Verre (.glass)
+   3. Menu plein écran (panneau + ouverture en cercle)
+   4. Animations d'apparition (.line, .fade-down, .grow-x)
+   5. Styles de texte (.num, .eyebrow, .brand, .label)
+   6. Liens du menu mobile
+   7. Burger -> croix
+   8. Liens bureau (trait au survol)
+   9. Réduire les animations
+  */
+
+
+/* =====================================================================
+   1. VARIABLES LOCALES
+   ===================================================================== */
+:host {
+  /* Couleurs du menu */
+  --menu-text: #fff;
+  --menu-text-soft: rgba(255, 255, 255, 0.85);
+  --menu-text-muted: rgba(255, 255, 255, 0.55);
+  --pink: #f9a8d4;
+  --violet: #c9a5ff;
+
+  /* Cascade d'apparition : le 1er élément démarre à --reveal-start,
+     chaque élément suivant attend --reveal-step de plus (via --i) */
+  --reveal-start: 952ms;
+  --reveal-step: 90ms;
+}
+
+
+/* =====================================================================
+   2. VERRE
+   ===================================================================== */
 .glass {
   background: rgba(255, 255, 255, 0.08);
 
   backdrop-filter: blur(16px) saturate(160%);
-  -webkit-backdrop-filter: blur(16px) saturate(160%); 
+  -webkit-backdrop-filter: blur(16px) saturate(160%);
 
   border: 1px solid rgba(255, 255, 255, 0.18);
-  border-radius: 20px;
+  border-radius: 30px;
 
   box-shadow:
     0 8px 32px rgba(0, 0, 0, 0.35),
     inset 0 1px 0 rgba(255, 255, 255, 0.15);
 
-  padding: 24px;
-  color: #fff;
+  color: var(--menu-text);
+}
+
+
+/* =====================================================================
+   3. MENU PLEIN ÉCRAN
+   Un panneau qui couvre l'écran, révélé en cercle depuis le burger.
+   ===================================================================== */
+.fullscreen {
+  /* Centre du cercle = position du burger. À ajuster si besoin. */
+  --ox: calc(100% - 8.333vw - 2rem);
+  --oy: 3rem;
+
+  /* Placement : fixé à l'écran, au-dessus de la page */
+  position: fixed;
+  inset: 0;
+  z-index: 30;
+
+  /* Rangement du contenu : empilé de haut en bas */
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
+  padding: 1.5rem 2rem 2.5rem;
+
+  /* Fond */
+  background:
+    radial-gradient(70% 50% at 85% 10%, rgba(139, 47, 214, 0.4), transparent),
+    radial-gradient(60% 50% at 10% 100%, rgba(208, 48, 127, 0.3), transparent),
+    rgba(11, 14, 42, 0.84);
+  backdrop-filter: blur(30px) saturate(150%);
+  -webkit-backdrop-filter: blur(30px) saturate(150%);
+
+  /* Fermé : cercle de rayon 0, rien n'est visible ni cliquable */
+  clip-path: circle(0 at var(--ox) var(--oy));
+  transition: clip-path 600ms var(--ease);
+  pointer-events: none;
+}
+
+/* Ouvert : le cercle grandit jusqu'à couvrir l'écran */
+.fullscreen[data-open='true'] {
+  clip-path: circle(150% at var(--ox) var(--oy));
+  transition-duration: 800ms;
+  pointer-events: auto;
+}
+
+
+/* =====================================================================
+   4. ANIMATIONS D'APPARITION
+
+   .line         : le masque (cache ce qui dépasse). Doit être collé
+                   à l'élément animé.
+   .line__inner  : ce qui monte à l'intérieur du masque.
+   .fade-down    : apparaît en descendant un peu (ex : logo).
+   .grow-x       : un trait qui s'étire en largeur.
+
+   Le moment d'apparition se règle avec :
+     --i  (numéro d'ordre)  pour .line__inner : style="--i: 2"
+     --d  (délai en ms)     pour .fade-down et .grow-x : style="--d: 450ms"
+   ===================================================================== */
+
+/* --- Masque + texte qui monte --- */
+.line {
+  overflow: hidden;
+}
+
+.line__inner {
+  display: flex;
+  align-items: baseline;
+  gap: 1rem;
+  transform: translateY(115%);
+  transition: transform 250ms var(--ease);
+}
+
+.fullscreen[data-open='true'] .line__inner {
+  transform: none;
+  transition-duration: 800ms;
+  /* var(--i, 0) : si l'élément n'a pas de --i, on prend 0 */
+  transition-delay: calc(var(--reveal-start) + var(--i, 0) * var(--reveal-step));
+}
+
+/* --- Fondu qui descend --- */
+.fade-down {
+  opacity: 0;
+  transform: translateY(-10px);
+  transition: opacity 250ms, transform 250ms var(--ease);
+}
+
+.fullscreen[data-open='true'] .fade-down {
+  opacity: 1;
+  transform: none;
+  transition-duration: 300ms;
+  transition-delay: var(--d, 450ms);
+}
+
+/* --- Trait qui s'étire (.trait-annim = ancien nom, toujours accepté) --- */
+.grow-x,
+.trait-annim {
+  transform: scaleX(0);
+  transition: transform 250ms var(--ease);
+}
+
+.fullscreen[data-open='true'] .grow-x,
+.fullscreen[data-open='true'] .trait-annim {
+  transform: scaleX(1);
+  transition-duration: 900ms;
+  transition-delay: var(--d, 600ms);
+}
+
+
+/* =====================================================================
+   5. STYLES DE TEXTE
+   Les tailles viennent de styles.css (--fs-tiny, small, medium,
+   large, display). Le deuxième argument de var() est une valeur de
+   secours si la variable n'existe pas encore.
+
+   .num, .eyebrow : pas de font-size ici, on la choisit dans le HTML
+                    avec une classe Tailwind (text-tiny, text-small...).
+
+   .num      numéros 01, 02, 03       (chiffres alignés)
+   .eyebrow  petit titre discret      ex : "Navigation"
+   .brand    nom de la marque         (medium)
+   .label    gros liens du menu       (large, police Fraunces)
+   ===================================================================== */
+.num {
+  color: var(--menu-text-muted);
+  font-variant-numeric: tabular-nums; /* tous les chiffres ont la même largeur */
+}
+
+.eyebrow {
+  color: var(--menu-text-muted);
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+}
+
+.brand {
+  margin: 0;
+  font-family: 'Fraunces', Georgia, serif;
+  font-size: var(--fs-medium, 1.125rem);
+  color: var(--menu-text);
+}
+
+.label {
+  font-family: 'Fraunces', Georgia, serif;
+  font-size: var(--fs-large, clamp(1.5rem, 7vw, 2rem));
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+
+  /* Soulignement rose qui se dessine au survol (largeur 0 -> 100 %) */
+  background: linear-gradient(var(--pink), var(--pink)) 0 100% / 0 2px no-repeat;
+  transition: background-size 400ms var(--ease), color 250ms;
+}
+
+
+/* =====================================================================
+   6. LIENS DU MENU MOBILE
+   ===================================================================== */
+ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.link {
+  display: block;
+  padding: 0.25rem 0;
+  color: var(--menu-text);
+  text-decoration: none;
+}
+
+.link:hover .label,
+.link:focus-visible .label {
+  background-size: 100% 2px;
+}
+
+/* Page actuelle : rose */
+.link.active .label {
+  color: var(--pink);
+}
+
+
+/* =====================================================================
+   7. BURGER -> CROIX
+   Les deux icônes sont empilées ; on fait tourner / disparaître l'une
+   ou l'autre selon data-open sur le bouton.
+   ===================================================================== */
+.icon {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  transition: transform 350ms var(--ease), opacity 200ms;
+}
+
+.icon--x {
+  opacity: 0;
+  transform: rotate(-90deg) scale(0.5);
+}
+
+button[data-open='true'] .icon--menu {
+  opacity: 0;
+  transform: rotate(90deg) scale(0.5);
+}
+
+button[data-open='true'] .icon--x {
+  opacity: 1;
+  transform: none;
+}
+
+/* Ancien bouton burger maison. Ton HTML utilise maintenant
+   z-button zSize="icon" : si plus rien n'a la classe mobile-toggle,
+   tu peux supprimer ces deux règles. */
+.mobile-toggle {
+  width: 44px;
+  height: 44px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  backdrop-filter: blur(16px);
+  color: var(--menu-text);
+  transition:
+    background 250ms var(--ease),
+    border-color 250ms var(--ease);
+}
+
+.mobile-toggle:hover {
+  background: rgba(255, 255, 255, 0.16);
+}
+
+
+/* =====================================================================
+   8. LIENS BUREAU : trait qui se dessine au survol
+   ===================================================================== */
+.nav-link {
+  position: relative;
+  padding-block: 0.25rem;
+
+  font-family: 'Fraunces', Georgia, serif;
+  font-size: var(--fs-medium, 1.125rem);
+  color: var(--menu-text-soft);
+  text-decoration: none;
+
+  transition: color 250ms var(--ease);
+}
+
+.nav-link::after {
+  content: '';
+  position: absolute;
+  inset-inline: 0;
+  bottom: -2px;
+  height: 2px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, var(--pink), var(--violet));
+
+  transform: scaleX(0);       /* trait invisible au repos */
+  transform-origin: right;    /* quand il se retire, il part vers la droite */
+  transition: transform 450ms var(--ease);
+}
+
+/* Survol / clavier : blanc */
+.nav-link:hover,
+.nav-link:focus-visible {
+  color: var(--menu-text);
+}
+
+/* Page actuelle : rose (la classe "active" vient de routerLinkActive="active") */
+.nav-link.active {
+  color: var(--pink);
+}
+
+/* Trait complet au survol, au clavier et sur la page actuelle */
+.nav-link:hover::after,
+.nav-link:focus-visible::after,
+.nav-link.active::after {
+  transform: scaleX(1);       /* trait complet */
+  transform-origin: left;     /* il grandit à partir de la gauche */
+}
+
+
+/* =====================================================================
+   9. RÉDUIRE LES ANIMATIONS
+   Pour les personnes qui ont activé ce réglage dans leur système.
+   ===================================================================== */
+@media (prefers-reduced-motion: reduce) {
+  .fullscreen,
+  .line__inner,
+  .label,
+  .icon,
+  .fade-down,
+  .grow-x,
+  .trait-annim,
+  .nav-link,
+  .nav-link::after {
+    transition-duration: 1ms !important;
+    transition-delay: 0ms !important;
+  }
 }

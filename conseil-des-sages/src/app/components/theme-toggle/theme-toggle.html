@@ -1,0 +1,6 @@
+<button type="button" z-button (click)="theme.toggle($event)" [attr.data-mode]="theme.current()" [attr.aria-label]="theme.current() === 'dark' ? 'PAssez en thème clair' : 'Passez en thème sombre'">
+    <span class="relative block size-4">
+        <svg lucideSun class="icon icon--sun" aria-hidden="true"></svg>
+        <svg lucideMoon class="icon icon--moon" aria-hidden="true"></svg>
+    </span>
+</button>
