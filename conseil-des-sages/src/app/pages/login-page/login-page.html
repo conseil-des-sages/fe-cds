@@ -1,13 +1,6 @@
 <div class="page">
   <main class="card glass glass--strong" aria-labelledby="auth-title">
-    <div class="brand-mark" aria-hidden="true">
-      <span class="orbit"></span>
-      <span class="node node--blue"></span>
-      <span class="node node--lilac"></span>
-      <span class="node node--orange"></span>
-      <span class="node node--pink"></span>
-      <span class="node node--green"></span>
-    </div>
+    <img class="brand-logo" src="logo.png" alt="Logo du Conseil des Sages">
 
     <header class="intro">
       <h1 id="auth-title">
@@ -41,7 +34,28 @@
       </button>
     </div>
 
-    <form class="form" [formGroup]="form" (ngSubmit)="onSubmit()">
+    <form class="form" [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
+      @if (mode() === 'inscription') {
+        <label class="field" for="pseudo">
+          <span>Pseudo</span>
+          <input
+            id="pseudo"
+            type="text"
+            formControlName="pseudo"
+            placeholder="Camille"
+            autocomplete="nickname"
+            maxlength="40"
+            minlength="2"
+            required
+            [attr.aria-invalid]="shouldShowError('pseudo')"
+            [attr.aria-describedby]="shouldShowError('pseudo') ? 'pseudo-error' : null"
+          >
+        </label>
+        @if (shouldShowError('pseudo')) {
+          <p class="error" id="pseudo-error">{{ errorText('pseudo') }}</p>
+        }
+      }
+
       <label class="field" for="email">
         <span>Email</span>
         <input
@@ -50,13 +64,21 @@
           formControlName="email"
           placeholder="camille.moreau@mail.fr"
           autocomplete="email"
+          required
+          [attr.aria-invalid]="shouldShowError('email')"
+          [attr.aria-describedby]="shouldShowError('email') ? 'email-error' : null"
         >
       </label>
+      @if (shouldShowError('email')) {
+        <p class="error" id="email-error">{{ errorText('email') }}</p>
+      }
 
       <div class="password-group">
         <div class="field-heading">
           <label for="password">Mot de passe</label>
-          <button class="forgot" type="button">Mot de passe oublié ?</button>
+          @if (mode() === 'connexion') {
+            <button class="forgot" type="button">Mot de passe oublié ?</button>
+          }
         </div>
         <div class="password-input">
           <input
@@ -65,6 +87,10 @@
             formControlName="password"
             placeholder="••••••••••"
             [autocomplete]="mode() === 'connexion' ? 'current-password' : 'new-password'"
+            minlength="8"
+            required
+            [attr.aria-invalid]="shouldShowError('password')"
+            [attr.aria-describedby]="shouldShowError('password') ? 'password-error' : null"
           >
           <button
             class="visibility"
@@ -78,6 +104,9 @@
             </svg>
           </button>
         </div>
+        @if (shouldShowError('password')) {
+          <p class="error" id="password-error">{{ errorText('password') }}</p>
+        }
       </div>
 
       <button class="submit" type="submit">

@@ -1,0 +1,79 @@
+<div class="page">
+  <main>
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="hero-copy">
+        <p class="eyebrow">
+          <span class="eyebrow-dot" aria-hidden="true"></span>
+          Un conseil d’IA pour tes grandes décisions
+        </p>
+        <h1 id="hero-title">Cinq sages débattent de ta décision. <em>Toi, tu tranches.</em></h1>
+        <p class="lead">
+          Soumets un choix important - études, premier job, logement - à un conseil de cinq IA aux
+          personnalités opposées. Ils en débattent devant toi, puis te remettent une synthèse claire.
+        </p>
+        <div class="cta">
+          <a routerLink="/connexion" class="btn btn--primary btn--lg">
+            Commencer
+            <app-icon name="arrow-right" [size]="18" />
+          </a>
+          <a routerLink="/salle" class="btn btn--glass btn--lg">
+            <app-icon name="play" [size]="16" />
+            Voir un débat
+          </a>
+        </div>
+      </div>
+
+      <div class="hero-art">
+        <app-council-ring
+          class="council-visualization"
+          [sages]="sages"
+          [activeId]="active().id"
+          [avatarSize]="76"
+          [rx]="40"
+          [ry]="40"
+          label="Les cinq sages du conseil de base"
+        >
+          <figure class="hero-bubble glass glass--strong" [style.--c]="'var(--sage-' + active().color + ')'">
+            <figcaption class="hero-q">{{ question }}</figcaption>
+            <p class="hero-who">{{ active().name }}</p>
+            <p class="hero-line" aria-live="polite">{{ line() }}</p>
+          </figure>
+        </app-council-ring>
+      </div>
+    </section>
+
+    <section class="how" aria-labelledby="how-title">
+      <h2 id="how-title">Comment ça marche</h2>
+      <ol class="how-grid">
+        @for (s of steps; track s.title; let i = $index) {
+          <li class="how-card glass">
+            <div class="how-top">
+              <span class="how-icon"><app-icon [name]="s.icon" [size]="22" /></span>
+              <span class="how-step">Étape {{ i + 1 }}</span>
+            </div>
+            <h3>{{ s.title }}</h3>
+            <p>{{ s.text }}</p>
+            <p class="how-example">{{ s.example }}</p>
+          </li>
+        }
+      </ol>
+    </section>
+
+    <section class="meet" aria-labelledby="meet-title">
+      <div class="meet-head">
+        <h2 id="meet-title">Le conseil de base</h2>
+        <p>Cinq regards qui ne seront jamais d’accord. Remplace-les par les tiens, ou par ceux de la communauté.</p>
+      </div>
+      <div class="meet-grid">
+        @for (s of sages; track s.id) {
+          <app-sage-card [sage]="s" [preview]="true" />
+        }
+      </div>
+    </section>
+  </main>
+
+  <footer class="foot">
+    <span>© 2026 Le Conseil des Sages</span>
+    <span>Les sages conseillent, ils ne décident pas à ta place.</span>
+  </footer>
+</div>
