@@ -1,6 +1,8 @@
 import { Component, inject, signal } from '@angular/core';
+import { HttpErrorResponse } from '@angular/common/http';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { finalize } from 'rxjs';
 import { AuthService } from '../../services/auth.service';
 
 type Mode = 'connexion' | 'inscription';
@@ -18,23 +20,30 @@ export class LoginPage {
   readonly mode = signal<Mode>('connexion');
   readonly showPassword = signal(false);
   protected readonly submitted = signal(false);
+  protected readonly pending = signal(false);
+  protected readonly authError = signal('');
 
   form: FormGroup = new FormGroup({
     pseudo: new FormControl(''),
     email: new FormControl('', [Validators.required, Validators.email]),
-    password: new FormControl('', [Validators.required, Validators.minLength(8)]),
+    password: new FormControl('', [Validators.required]),
   });
 
   setMode(mode: Mode) {
     this.mode.set(mode);
     this.submitted.set(false);
+    this.authError.set('');
     const pseudo = this.form.controls['pseudo'];
+    const password = this.form.controls['password'];
     if (mode === 'inscription') {
       pseudo.setValidators([Validators.required, Validators.minLength(2)]);
+      password.setValidators([Validators.required, Validators.minLength(8)]);
     } else {
       pseudo.clearValidators();
+      password.setValidators([Validators.required]);
     }
     pseudo.updateValueAndValidity();
+    password.updateValueAndValidity();
   }
 
   togglePasswordVisibility() {
@@ -48,9 +57,17 @@ export class LoginPage {
       return;
     }
 
-    // Temporary frontend-only sign-in until the project has a real auth API.
-    this.auth.signIn();
-    void this.router.navigateByUrl('/app');
+    this.authError.set('');
+    this.pending.set(true);
+    const value = this.form.getRawValue();
+    const request = this.mode() === 'inscription'
+      ? this.auth.register({ name: value.pseudo.trim(), email: value.email.trim(), password: value.password })
+      : this.auth.login({ email: value.email.trim(), password: value.password });
+
+    request.pipe(finalize(() => this.pending.set(false))).subscribe({
+      next: () => void this.router.navigateByUrl('/app'),
+      error: (error: unknown) => this.authError.set(this.backendError(error)),
+    });
   }
 
   protected shouldShowError(name: string): boolean {
@@ -70,5 +87,16 @@ export class LoginPage {
         : 'Le mot de passe doit contenir au moins 8 caractères.';
     }
     return '';
+  }
+
+  private backendError(error: unknown): string {
+    if (error instanceof HttpErrorResponse) {
+      if (error.status === 0) return 'Impossible de joindre le serveur. Vérifie que le backend est lancé.';
+      if (error.status === 401) return 'Email ou mot de passe incorrect.';
+      if (error.status === 409) return 'Un compte existe déjà avec cette adresse email.';
+      const detail = (error.error as { detail?: unknown } | null)?.detail;
+      if (typeof detail === 'string' && detail.trim()) return detail;
+    }
+    return 'Une erreur est survenue. Réessaie dans un instant.';
   }
 }

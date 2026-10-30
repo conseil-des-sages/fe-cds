@@ -10,7 +10,8 @@ import {
   viewChild,
 } from '@angular/core';
 import { Router } from '@angular/router';
-import { SUGGESTIONS, TRENDS, USER } from '../../data/sages';
+import { SUGGESTIONS, TRENDS } from '../../data/sages';
+import { AuthService } from '../../services/auth.service';
 import { CouncilStore } from '../../services/council.store';
 import { IconComponent } from '../../ui/icon.component';
 import { SageAvatarComponent } from '../../ui/sage-avatar.component';
@@ -25,12 +26,12 @@ import { CustomizeCouncilComponent } from './customize-council.component';
 })
 export class DashboardPage {
   private readonly router = inject(Router);
+  protected readonly auth = inject(AuthService);
   protected readonly store = inject(CouncilStore);
 
   /** ?personnaliser=1 opens the dialog, ?personnaliser=creer opens the create form */
   readonly personnaliser = input<string | undefined>(undefined);
 
-  protected readonly user = USER;
   protected readonly trends = TRENDS;
   protected readonly suggestions = SUGGESTIONS;
 

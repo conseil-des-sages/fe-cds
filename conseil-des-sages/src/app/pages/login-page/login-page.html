@@ -87,7 +87,7 @@
             formControlName="password"
             placeholder="••••••••••"
             [autocomplete]="mode() === 'connexion' ? 'current-password' : 'new-password'"
-            minlength="8"
+            [attr.minlength]="mode() === 'inscription' ? 8 : null"
             required
             [attr.aria-invalid]="shouldShowError('password')"
             [attr.aria-describedby]="shouldShowError('password') ? 'password-error' : null"
@@ -109,12 +109,15 @@
         }
       </div>
 
-      <button class="submit" type="submit">
-        {{ mode() === 'connexion' ? 'Se connecter' : 'Créer mon compte' }}
+      <button class="submit" type="submit" [disabled]="pending()">
+        {{ pending() ? 'Connexion au serveur…' : mode() === 'connexion' ? 'Se connecter' : 'Créer mon compte' }}
         <svg viewBox="0 0 24 24" aria-hidden="true">
           <path d="M5 12h14M13 6l6 6-6 6" />
         </svg>
       </button>
+      @if (authError()) {
+        <p class="error server-error" role="alert">{{ authError() }}</p>
+      }
     </form>
 
     <p class="switch-mode">
