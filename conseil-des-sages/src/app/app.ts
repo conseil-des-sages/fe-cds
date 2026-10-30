@@ -4,7 +4,7 @@ import { BackdropComponent } from './ui/backdrop-components';
 import { Navbar } from './components/navbar/navbar';
 
 @Component({
-  imports: [RouterOutlet, BackdropComponent],
+  imports: [RouterOutlet, BackdropComponent, Navbar],
   selector: 'app-root',
   styleUrl: './app.css',
   templateUrl: './app.html',
