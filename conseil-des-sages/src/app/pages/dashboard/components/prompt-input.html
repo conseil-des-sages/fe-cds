@@ -1,0 +1,58 @@
+<form class="cds-glass prompt" (submit)="$event.preventDefault(); send()">
+  <label class="sr-only" for="decision">Ta décision</label>
+  <textarea
+    id="decision"
+    class="area"
+    rows="2"
+    maxlength="400"
+    placeholder="Quelle décision veux-tu soumettre au conseil ?"
+    [value]="question()"
+    (input)="question.set(value($event))"
+    (keydown)="onKeydown($event)"
+  ></textarea>
+
+  @if (showContext()) {
+    <div class="context">
+      <label class="cds-label" for="decision-context">Contexte</label>
+      <textarea
+        id="decision-context"
+        class="area area--small"
+        rows="3"
+        maxlength="2000"
+        placeholder="Budget, délais, ce qui compte pour toi…"
+        [value]="context()"
+        (input)="context.set(value($event))"
+      ></textarea>
+    </div>
+  }
+
+  <div class="bar">
+    <div class="tools">
+      <div class="cds-council" role="img" [attr.aria-label]="councilLabel()">
+        @for (sage of council(); track sage.id) {
+          <app-sage-avatar [icon]="sage.icon" [color]="sage.color" [size]="28" [decorative]="true" />
+        }
+      </div>
+      <button type="button" class="cds-btn cds-btn--ghost cds-btn--sm" (click)="customize.emit()">
+        Personnaliser le conseil
+      </button>
+      @if (!showContext()) {
+        <button type="button" class="cds-btn cds-btn--ghost cds-btn--sm" (click)="showContext.set(true)">
+          <app-icon name="plus" [size]="16" />
+          Contexte
+        </button>
+      }
+    </div>
+    <button
+      type="submit"
+      class="cds-btn cds-btn--primary cds-btn--icon"
+      [attr.aria-label]="starting() ? 'Le conseil se réunit…' : 'Réunir le conseil'"
+      [disabled]="!canSend()"
+    >
+      <app-icon name="arrow-up" />
+    </button>
+  </div>
+</form>
+@if (starting()) {
+  <p class="caption status" role="status">Le conseil se réunit…</p>
+}

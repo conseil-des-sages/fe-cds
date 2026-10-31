@@ -19,11 +19,11 @@
    ===================================================================== */
 :host {
   /* Couleurs du menu */
-  --menu-text: #fff;
-  --menu-text-soft: rgba(255, 255, 255, 0.85);
-  --menu-text-muted: rgba(255, 255, 255, 0.55);
-  --pink: #f9a8d4;
-  --violet: #c9a5ff;
+  --menu-text: var(--ink);
+  --menu-text-soft: color-mix(in srgb, var(--ink) 85%, transparent);
+  --menu-text-muted: color-mix(in srgb, var(--ink) 65%, transparent);
+  --pink: var(--accent-text);
+  --violet: var(--accent);
 
   /* Cascade d'apparition : le 1er élément démarre à --reveal-start,
      chaque élément suivant attend --reveal-step de plus (via --i) */
@@ -36,17 +36,15 @@
    2. VERRE
    ===================================================================== */
 .glass {
-  background: rgba(255, 255, 255, 0.08);
+  background: var(--glass);
 
-  backdrop-filter: blur(16px) saturate(160%);
-  -webkit-backdrop-filter: blur(16px) saturate(160%);
+  backdrop-filter: blur(var(--blur-sm)) saturate(140%);
+  -webkit-backdrop-filter: blur(var(--blur-sm)) saturate(140%);
 
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  border-radius: 30px;
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-full);
 
-  box-shadow:
-    0 8px 32px rgba(0, 0, 0, 0.35),
-    inset 0 1px 0 rgba(255, 255, 255, 0.15);
+  box-shadow: var(--shadow-float);
 
   color: var(--menu-text);
 }
@@ -74,11 +72,11 @@
 
   /* Fond */
   background:
-    radial-gradient(70% 50% at 85% 10%, rgba(139, 47, 214, 0.4), transparent),
-    radial-gradient(60% 50% at 10% 100%, rgba(208, 48, 127, 0.3), transparent),
-    rgba(11, 14, 42, 0.84);
-  backdrop-filter: blur(30px) saturate(150%);
-  -webkit-backdrop-filter: blur(30px) saturate(150%);
+    radial-gradient(70% 50% at 85% 10%, var(--orb-1), transparent),
+    radial-gradient(60% 50% at 10% 100%, var(--orb-2), transparent),
+    color-mix(in srgb, var(--bg) 84%, transparent);
+  backdrop-filter: blur(var(--blur-lg)) saturate(140%);
+  -webkit-backdrop-filter: blur(var(--blur-lg)) saturate(140%);
 
   /* Fermé : cercle de rayon 0, rien n'est visible ni cliquable */
   clip-path: circle(0 at var(--ox) var(--oy));
@@ -185,13 +183,13 @@
 
 .brand {
   margin: 0;
-  font-family: 'Fraunces', Georgia, serif;
+  font-family: var(--font-display);
   font-size: var(--fs-medium, 1.125rem);
   color: var(--menu-text);
 }
 
 .label {
-  font-family: 'Fraunces', Georgia, serif;
+  font-family: var(--font-display);
   font-size: var(--fs-large, clamp(1.5rem, 7vw, 2rem));
   line-height: 1.1;
   letter-spacing: -0.02em;
@@ -263,10 +261,10 @@ button[data-open='true'] .icon--x {
 .mobile-toggle {
   width: 44px;
   height: 44px;
-  border-radius: 16px;
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  backdrop-filter: blur(16px);
+  border-radius: var(--radius-md);
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  backdrop-filter: blur(var(--blur-sm));
   color: var(--menu-text);
   transition:
     background 250ms var(--ease),
@@ -274,7 +272,7 @@ button[data-open='true'] .icon--x {
 }
 
 .mobile-toggle:hover {
-  background: rgba(255, 255, 255, 0.16);
+  background: var(--glass-hover);
 }
 
 
@@ -285,7 +283,7 @@ button[data-open='true'] .icon--x {
   position: relative;
   padding-block: 0.25rem;
 
-  font-family: 'Fraunces', Georgia, serif;
+  font-family: var(--font-display);
   font-size: var(--fs-medium, 1.125rem);
   color: var(--menu-text-soft);
   text-decoration: none;

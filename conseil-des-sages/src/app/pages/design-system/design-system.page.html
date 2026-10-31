@@ -1,0 +1,67 @@
+<main class="cds-page">
+  <div class="cds-page__inner">
+    <header>
+      <p class="cds-label">Le Conseil des Sages</p>
+      <h1 class="display-l">Design system</h1>
+    </header>
+
+    <section class="cds-glass cds-glass--strong block">
+      <h2 class="heading-2">Couleurs</h2>
+      <ul class="swatches">
+        @for (token of colors; track token) {
+          <li class="swatch">
+            <span class="chip" [style.background]="'var(--' + token + ')'"></span>
+            <span class="caption">{{ token }}</span>
+          </li>
+        }
+      </ul>
+    </section>
+
+    <section class="cds-glass cds-glass--strong block">
+      <h2 class="heading-2">Typographie</h2>
+      @for (style of textStyles; track style) {
+        <p [class]="style">{{ style }} : Quelle décision t’attend ?</p>
+      }
+      <p class="cds-label">label : Confrontation</p>
+      <p class="metric">12 480</p>
+    </section>
+
+    <section class="block">
+      <h2 class="heading-2">Boutons</h2>
+      <div class="row">
+        <button type="button" class="cds-btn cds-btn--primary">Réunir le conseil</button>
+        <button type="button" class="cds-btn">Personnaliser le conseil</button>
+        <button type="button" class="cds-btn cds-btn--ghost">Annuler</button>
+        <button type="button" class="cds-btn cds-btn--primary cds-btn--icon" aria-label="Envoyer"><app-icon name="arrow-up" /></button>
+        <button type="button" class="cds-btn cds-btn--primary" disabled>Désactivé</button>
+      </div>
+    </section>
+
+    <section class="block">
+      <h2 class="heading-2">Verre</h2>
+      <div class="glass-grid">
+        <div class="cds-glass cds-glass--light pane"><span class="cds-label">Léger</span></div>
+        <div class="cds-glass pane"><span class="cds-label">Standard</span></div>
+        <div class="cds-glass cds-glass--strong pane"><span class="cds-label">Dense</span></div>
+      </div>
+    </section>
+
+    <section class="block">
+      <h2 class="heading-2">La salle</h2>
+      <app-council-ring class="council" [sages]="sages" [activeId]="sages[2].id">
+        <app-intervention-panel class="panel" [sage]="sages[2]" text="Regarde ce que chaque option te coûte vraiment sur deux ans." stepLabel="Confrontation" [repliesTo]="sages[0]" />
+      </app-council-ring>
+      <app-step-progress [steps]="steps" />
+    </section>
+
+    <section class="block">
+      <h2 class="heading-2">Cartes</h2>
+      <div class="cards">
+        @for (sage of sages; track sage.id) {
+          <app-sage-card [sage]="sage" [preview]="true" />
+        }
+      </div>
+      <app-trend-card class="trend" [stats]="stats" />
+    </section>
+  </div>
+</main>

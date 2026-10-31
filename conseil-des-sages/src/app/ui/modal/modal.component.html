@@ -1,0 +1,18 @@
+<dialog #dialog class="modal" [attr.aria-label]="heading()" (close)="closed.emit()">
+  @if (open()) {
+    <div class="cds-glass cds-glass--strong panel" [class.panel--wide]="wide()">
+      <header class="head">
+        <div class="titles">
+          <h2 class="heading-2">{{ heading() }}</h2>
+          @if (subtitle()) {
+            <p class="body subtitle">{{ subtitle() }}</p>
+          }
+        </div>
+        <button type="button" class="cds-btn cds-btn--ghost cds-btn--icon" aria-label="Fermer" (click)="closed.emit()">
+          <app-icon name="x" />
+        </button>
+      </header>
+      <div class="content"><ng-content /></div>
+    </div>
+  }
+</dialog>

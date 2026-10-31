@@ -1,0 +1,57 @@
+<section class="cds-glass cds-glass--strong history" aria-labelledby="history-title">
+  <h2 id="history-title" class="heading-2">Mes débats</h2>
+
+  @if (debates(); as list) {
+    <ul class="rows">
+      @for (debate of list; track debate.id) {
+        <li class="row">
+          <a class="main" [routerLink]="['/salle', debate.id]">
+            <span class="heading-3 title">{{ debate.title }}</span>
+            <span class="caption meta">
+              <app-icon [name]="status[debate.status].icon" [size]="16" />
+              {{ status[debate.status].label }} · {{ debate.createdAt | date: 'd MMM y' : '' : 'fr' }}
+              @if (debate.theme) {
+                · {{ debate.theme }}
+              }
+            </span>
+          </a>
+          <span class="cds-council faces" aria-hidden="true">
+            @for (sage of debate.sages; track sage.id) {
+              <app-sage-avatar [icon]="sage.icon" [color]="sage.color" [size]="28" [decorative]="true" />
+            }
+          </span>
+          <div class="actions">
+            @if (confirmingId() === debate.id) {
+              <span class="caption">Supprimer ce débat ?</span>
+              <button type="button" class="cds-btn cds-btn--ghost cds-btn--sm" (click)="confirmingId.set(null)">Annuler</button>
+              <button type="button" class="cds-btn cds-btn--sm cds-btn--danger" (click)="confirmDelete(debate)">Supprimer</button>
+            } @else {
+              @if (debate.status !== 'IN_PROGRESS') {
+                <button
+                  type="button"
+                  class="cds-btn cds-btn--ghost cds-btn--icon"
+                  [attr.aria-label]="(debate.status === 'ARCHIVED' ? 'Désarchiver ' : 'Archiver ') + debate.title"
+                  (click)="archived.emit(debate)"
+                >
+                  <app-icon [name]="debate.status === 'ARCHIVED' ? 'rotate' : 'archive'" [size]="16" />
+                </button>
+              }
+              <button
+                type="button"
+                class="cds-btn cds-btn--ghost cds-btn--icon"
+                [attr.aria-label]="'Supprimer ' + debate.title"
+                (click)="confirmingId.set(debate.id)"
+              >
+                <app-icon name="trash" [size]="16" />
+              </button>
+            }
+          </div>
+        </li>
+      } @empty {
+        <li class="body empty">Tu n’as encore soumis aucune décision au conseil.</li>
+      }
+    </ul>
+  } @else {
+    <p class="body empty" role="status">Le conseil rassemble ses archives…</p>
+  }
+</section>

@@ -1,84 +1,53 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  ElementRef,
-  computed,
-  effect,
-  inject,
-  input,
-  signal,
-  viewChild,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
-import { SUGGESTIONS, TRENDS } from '../../data/sages';
-import { AuthService } from '../../services/auth.service';
-import { CouncilStore } from '../../services/council.store';
-import { IconComponent } from '../../ui/icon.component';
-import { SageAvatarComponent } from '../../ui/sage-avatar.component';
-import { CustomizeCouncilComponent } from './customize-council.component';
+import { Stats } from '@/models/account.model';
+import { DebateSummary } from '@/models/debate.model';
+import { AccountApi } from '@/services/api/account.api';
+import { apiErrorMessage } from '@/services/api/api-error';
+import { DebatesApi } from '@/services/api/debates.api';
+import { CouncilStore } from '@/services/council.store';
+import { ModalComponent } from '@/ui/modal/modal.component';
+import { TrendCardComponent } from '@/ui/trend-card/trend-card.component';
+import { PromptInputComponent, PromptSubmission } from './components/prompt-input';
+import { RecentDebatesComponent } from './components/recent-debates';
+import { CustomizeCouncilComponent } from './customize-council/customize-council.component';
 
 @Component({
   selector: 'app-dashboard-page',
-  imports: [IconComponent, SageAvatarComponent, CustomizeCouncilComponent],
+  imports: [RecentDebatesComponent, PromptInputComponent, TrendCardComponent, ModalComponent, CustomizeCouncilComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './dashboard.page.html',
   styleUrl: './dashboard.page.css',
 })
 export class DashboardPage {
   private readonly router = inject(Router);
-  protected readonly auth = inject(AuthService);
+  private readonly debates = inject(DebatesApi);
+  private readonly account = inject(AccountApi);
   protected readonly store = inject(CouncilStore);
 
-  /** ?personnaliser=1 opens the dialog, ?personnaliser=creer opens the create form */
-  readonly personnaliser = input<string | undefined>(undefined);
-
-  protected readonly trends = TRENDS;
-  protected readonly suggestions = SUGGESTIONS;
-
-  protected readonly draft = signal('');
-  protected readonly canSend = computed(() => this.draft().trim().length >= 5);
-  protected readonly dialogOpen = signal(false);
-  protected readonly dialogView = signal<'grid' | 'form'>('grid');
-  private readonly dialog = viewChild<ElementRef<HTMLDialogElement>>('dialog');
-
-  protected readonly councilNames = computed(() =>
-    this.store
-      .council()
-      .map((s) => s.shortName)
-      .join(', '),
-  );
+  protected readonly stats = signal<Stats | null>(null);
+  /** Un débat continue même quand on quitte la salle : on doit pouvoir y retourner d'ici. */
+  protected readonly recent = signal<DebateSummary[]>([]);
+  protected readonly customizing = signal(false);
+  protected readonly starting = signal(false);
+  protected readonly error = signal('');
 
   constructor() {
-    effect(() => {
-      const p = this.personnaliser();
-      if (p) {
-        this.dialogView.set(p === 'creer' ? 'form' : 'grid');
-        this.dialogOpen.set(true);
-      }
+    this.store.load();
+    // Les tendances sont un plus : la page reste utilisable si elles ne se chargent pas.
+    this.account.stats().subscribe({ next: (stats) => this.stats.set(stats), error: () => this.stats.set(null) });
+    this.debates.list().subscribe({ next: (debates) => this.recent.set(debates), error: () => this.recent.set([]) });
+  }
+
+  protected start(submission: PromptSubmission): void {
+    this.starting.set(true);
+    this.error.set('');
+    this.debates.create({ ...submission, sageIds: this.store.councilIds() }).subscribe({
+      next: (debate) => void this.router.navigate(['/salle', debate.id]),
+      error: (error: unknown) => {
+        this.error.set(apiErrorMessage(error));
+        this.starting.set(false);
+      },
     });
-    effect(() => {
-      const el = this.dialog()?.nativeElement;
-      if (!el) return;
-      if (this.dialogOpen() && !el.open) el.showModal();
-      if (!this.dialogOpen() && el.open) el.close();
-    });
-  }
-
-  protected openCustomize(): void {
-    this.dialogView.set('grid');
-    this.dialogOpen.set(true);
-  }
-
-  protected onKeydown(e: KeyboardEvent): void {
-    if (e.key !== 'Enter' || e.shiftKey) return;
-    if (e.isComposing || e.keyCode === 229) return;
-    e.preventDefault();
-    this.send();
-  }
-
-  protected send(): void {
-    if (!this.canSend()) return;
-    this.store.question.set(this.draft().trim());
-    this.router.navigateByUrl('/salle');
   }
 }

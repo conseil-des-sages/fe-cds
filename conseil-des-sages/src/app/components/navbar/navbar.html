@@ -2,13 +2,13 @@
 
   <!-- Partie Ordinateur -->
   <div class="hidden md:flex items-center glass px-4 md:px-6 py-2">
-    <div class="w-1/2 flex flex-row items-center gap-3">
+    <div class="lg:w-1/2 flex flex-row items-center gap-3 mr-4 lg:mr-0">
       <img src="logo.png" alt="Conseil des Sages" class="h-8 md:h-12 items-center -my-2 md:-my-4 w-auto">
-      <h1 class="brand">Conseil des Sages</h1>
+      <h1 class="brand hidden lg:block">Conseil des Sages</h1>
     </div>
 
     <div class="flex-1 flex flex-row justify-center">
-    <nav aria-label="Navigation principale" class="flex justify-center gap-8">
+    <nav aria-label="Navigation principale" class="flex justify-center gap-4 lg:gap-8 whitespace-nowrap">
       @for (link of links; track link.path) {
         <a [routerLink]="link.path" routerLinkActive="active" class="nav-link">{{ link.label }}</a>
       }
@@ -69,7 +69,7 @@
             }
             </ul>
 
-            <div class="trait-annim my-10 w-full h-px mx-auto bg-white/30 origin-center"></div>
+            <div class="trait-annim my-10 w-full h-px mx-auto bg-[var(--hairline)] origin-center"></div>
 
             <div class="line cta mt-8 inset-0 w-full" [style.--i]="links.length">
                 <div class="line__inner flex flex-row justify-between items-center">

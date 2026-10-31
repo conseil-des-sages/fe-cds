@@ -1,20 +1,22 @@
 import { Component, inject, signal } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { finalize } from 'rxjs';
 import { AuthService } from '../../services/auth.service';
+import { IconComponent } from '../../ui/icon.component';
 
 type Mode = 'connexion' | 'inscription';
 
 @Component({
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, IconComponent],
   selector: 'app-login-page',
   styleUrl: './login-page.css',
   templateUrl: './login-page.html',
 })
 export class LoginPage {
   private readonly router = inject(Router);
+  private readonly route = inject(ActivatedRoute);
   private readonly auth = inject(AuthService);
 
   readonly mode = signal<Mode>('connexion');
@@ -65,7 +67,7 @@ export class LoginPage {
       : this.auth.login({ email: value.email.trim(), password: value.password });
 
     request.pipe(finalize(() => this.pending.set(false))).subscribe({
-      next: () => void this.router.navigateByUrl('/app'),
+      next: () => void this.router.navigateByUrl(this.route.snapshot.queryParamMap.get('returnUrl') ?? '/app'),
       error: (error: unknown) => this.authError.set(this.backendError(error)),
     });
   }
@@ -91,12 +93,12 @@ export class LoginPage {
 
   private backendError(error: unknown): string {
     if (error instanceof HttpErrorResponse) {
-      if (error.status === 0) return 'Impossible de joindre le serveur. Vérifie que le backend est lancé.';
+      if (error.status === 0) return 'Le serveur ne répond pas. Réessaie dans un instant.';
       if (error.status === 401) return 'Email ou mot de passe incorrect.';
       if (error.status === 409) return 'Un compte existe déjà avec cette adresse email.';
       const detail = (error.error as { detail?: unknown } | null)?.detail;
       if (typeof detail === 'string' && detail.trim()) return detail;
     }
-    return 'Une erreur est survenue. Réessaie dans un instant.';
+    return 'Une erreur est survenue, on relance ?';
   }
 }

@@ -1,0 +1,81 @@
+h1,
+h2,
+p {
+  margin: 0;
+}
+
+.block {
+  display: grid;
+  gap: var(--space-4);
+  padding: var(--space-6);
+}
+
+.swatches {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.swatch {
+  display: grid;
+  justify-items: center;
+  gap: var(--space-1);
+}
+
+.chip {
+  width: 44px;
+  height: 44px;
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-full);
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.glass-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: var(--space-4);
+}
+
+.pane {
+  padding: var(--space-8) var(--space-6);
+}
+
+.council {
+  width: min(100%, 640px);
+  aspect-ratio: 1.3;
+  margin-inline: auto;
+}
+
+.panel {
+  width: 60%;
+}
+
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: var(--space-4);
+}
+
+/* Dans la vitrine, la carte reste dans le flux au lieu de flotter sur la page */
+.trend {
+  position: static;
+  display: block;
+}
+
+@media (max-width: 767px) {
+  .council {
+    aspect-ratio: auto;
+  }
+  .panel {
+    width: 100%;
+  }
+}

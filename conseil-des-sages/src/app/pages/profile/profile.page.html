@@ -1,0 +1,45 @@
+<main class="cds-page">
+  <div class="cds-page__inner">
+    @if (failed()) {
+      <div class="cds-glass cds-glass--strong" style="padding: var(--space-6)" role="alert">
+        <p class="body" style="margin: 0 0 var(--space-3)">Une erreur est survenue, on relance ?</p>
+        <button type="button" class="cds-btn" (click)="load()">Réessayer</button>
+      </div>
+    }
+
+    @if (profile(); as me) {
+      <app-profile-hero [profile]="me" (renamed)="rename($event)" />
+    }
+
+    @if (error()) {
+      <p class="cds-error" role="alert">{{ error() }}</p>
+    }
+
+    <app-debate-history [debates]="debates()" (archived)="archive($event)" (deleted)="deleteDebate($event)" />
+    <app-my-sages
+      [sages]="store.mySages()"
+      (create)="editing.set('new')"
+      (edit)="editing.set($event)"
+      (remove)="deleteSage($event)"
+    />
+  </div>
+</main>
+
+<app-modal
+  [heading]="editedSage() ? 'Modifier le sage' : 'Créer un sage'"
+  [wide]="true"
+  [open]="!!editing()"
+  (closed)="editing.set(null)"
+>
+  @if (editing()) {
+    <div style="padding: 0 var(--space-6) var(--space-6)">
+      <app-sage-form
+        [initial]="editedSage()"
+        [models]="store.models()"
+        [saving]="saving()"
+        (saved)="saveSage($event)"
+        (cancelled)="editing.set(null)"
+      />
+    </div>
+  }
+</app-modal>

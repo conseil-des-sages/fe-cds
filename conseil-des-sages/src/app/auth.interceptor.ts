@@ -1,6 +1,7 @@
 import { HttpErrorResponse, HttpInterceptorFn, HttpRequest } from '@angular/common/http';
 import { HttpContextToken } from '@angular/common/http';
 import { inject } from '@angular/core';
+import { Router } from '@angular/router';
 import { catchError, switchMap, throwError } from 'rxjs';
 import { AuthService } from './services/auth.service';
 
@@ -16,12 +17,8 @@ function withAccessToken(request: HttpRequest<unknown>, token: string): HttpRequ
 
 export const authInterceptor: HttpInterceptorFn = (request, next) => {
   const auth = inject(AuthService);
-  const backendRequest =
-    request.url.startsWith('/api/') ||
-    ['/user', '/sage', '/sessions', '/roles'].some(
-      (prefix) => request.url === prefix || request.url.startsWith(`${prefix}/`),
-    );
-  if (!backendRequest || isAuthEndpoint(request.url)) return next(request);
+  const router = inject(Router);
+  if (!request.url.startsWith('/api/') || isAuthEndpoint(request.url)) return next(request);
 
   const token = auth.getAccessToken();
   const authorizedRequest = token ? withAccessToken(request, token) : request;
@@ -40,6 +37,7 @@ export const authInterceptor: HttpInterceptorFn = (request, next) => {
       return auth.refreshTokens().pipe(
         catchError((refreshError: unknown) => {
           auth.clearSession();
+          void router.navigateByUrl('/connexion');
           return throwError(() => refreshError);
         }),
         switchMap((tokens) =>

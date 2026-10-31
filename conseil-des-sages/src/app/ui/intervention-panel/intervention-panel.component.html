@@ -1,0 +1,21 @@
+<article class="cds-glass cds-glass--strong panel" [style.--sage]="'var(--sage-' + sage().color + ')'">
+  <header class="head">
+    <app-sage-avatar class="mobile-hidden" [icon]="sage().icon" [color]="sage().color" [size]="32" [decorative]="true" />
+    <div class="who">
+      <span class="heading-3 name">{{ sage().name }}</span>
+      @if (repliesTo(); as other) {
+        <span class="caption reply"><app-icon name="reply" [size]="16" />répond {{ replyLabel(other.name) }}</span>
+      }
+    </div>
+    @if (stepLabel()) {
+      <span class="cds-label step">{{ stepLabel() }}</span>
+    }
+  </header>
+  <div #body class="content cds-scroll" tabindex="0" aria-live="polite" (scroll)="onScroll($event)">
+    @if (thinking()) {
+      <p class="body-l waiting">{{ sage().shortName }} réfléchit…</p>
+    } @else {
+      <p class="body-l text">{{ text() }}@if (typing()) {<span class="caret" aria-hidden="true"></span>}</p>
+    }
+  </div>
+</article>

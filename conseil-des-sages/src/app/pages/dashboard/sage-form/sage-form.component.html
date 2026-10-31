@@ -1,0 +1,141 @@
+<form class="layout" [attr.aria-label]="initial() ? 'Modifier le sage' : 'Créer un sage'" (submit)="submit($event)">
+  <div class="fields">
+    <div class="cds-field">
+      <label class="cds-field__label" for="sage-name">Nom</label>
+      <input
+        id="sage-name"
+        class="cds-input"
+        maxlength="40"
+        placeholder="Le Coach"
+        [value]="name()"
+        (input)="name.set(value($event))"
+      />
+    </div>
+
+    <div class="cds-field">
+      <div class="row">
+        <label class="cds-field__label" for="sage-description">Description courte</label>
+        <span class="cds-hint">{{ description().length }} / {{ descriptionMax }}</span>
+      </div>
+      <textarea
+        id="sage-description"
+        class="cds-input"
+        rows="2"
+        [attr.maxlength]="descriptionMax"
+        placeholder="Ce qu’il apporte au débat, en une phrase."
+        [value]="description()"
+        (input)="description.set(value($event))"
+      ></textarea>
+    </div>
+
+    <fieldset class="cds-field">
+      <legend class="cds-field__label legend">Couleur</legend>
+      <div class="swatches" role="radiogroup" aria-label="Couleur du sage">
+        @for (item of colors; track item.id) {
+          <button
+            type="button"
+            role="radio"
+            class="swatch"
+            [style.--sage]="'var(--sage-' + item.id + ')'"
+            [attr.aria-checked]="color() === item.id"
+            [attr.aria-label]="item.label"
+            [title]="item.label"
+            (click)="color.set(item.id)"
+          >
+            @if (color() === item.id) {
+              <app-icon name="check" [size]="16" [stroke]="3" />
+            }
+          </button>
+        }
+      </div>
+    </fieldset>
+
+    <fieldset class="cds-field">
+      <legend class="cds-field__label legend">Symbole</legend>
+      <div class="icons" role="radiogroup" aria-label="Symbole du sage">
+        @for (item of icons; track item) {
+          <button
+            type="button"
+            role="radio"
+            class="icon-option"
+            [style.--sage]="'var(--sage-' + color() + ')'"
+            [attr.aria-checked]="icon() === item"
+            [attr.aria-label]="item"
+            (click)="icon.set(item)"
+          >
+            <app-icon [name]="item" />
+          </button>
+        }
+      </div>
+    </fieldset>
+
+    <div class="cds-field">
+      <label class="cds-field__label" for="sage-prompt">Personnalité (prompt système)</label>
+      <textarea
+        id="sage-prompt"
+        class="cds-input"
+        rows="6"
+        maxlength="4000"
+        [value]="prompt()"
+        (input)="prompt.set(value($event))"
+      ></textarea>
+      <span class="cds-hint">Les autres joueurs ne voient jamais ce texte.</span>
+    </div>
+
+    <div class="cds-field">
+      <label class="cds-field__label" for="sage-model">Modèle d’IA</label>
+      <select id="sage-model" class="cds-input" [value]="model()" (change)="model.set(value($event))">
+        @for (item of models(); track item.id) {
+          <option [value]="item.id" [selected]="item.id === model()">
+            {{ item.label }}{{ item.available ? '' : ' (clé manquante)' }}
+          </option>
+        }
+      </select>
+    </div>
+
+    <div class="cds-field">
+      <div class="row">
+        <label class="cds-field__label" for="sage-temperature">Température</label>
+        <span class="cds-hint">{{ temperature().toFixed(1) }} · {{ temperatureLabel() }}</span>
+      </div>
+      <input
+        id="sage-temperature"
+        class="range"
+        type="range"
+        min="0"
+        max="1"
+        step="0.1"
+        [value]="temperature()"
+        [attr.aria-valuetext]="temperature().toFixed(1) + ', ' + temperatureLabel()"
+        (input)="temperature.set(+value($event))"
+      />
+    </div>
+
+    <fieldset class="cds-field">
+      <legend class="cds-field__label legend">Longueur des réponses</legend>
+      <div class="cds-segmented" role="radiogroup" aria-label="Longueur des réponses">
+        @for (item of lengths; track item.tokens) {
+          <button type="button" role="radio" [attr.aria-checked]="maxTokens() === item.tokens" (click)="maxTokens.set(item.tokens)">
+            {{ item.label }}
+          </button>
+        }
+      </div>
+    </fieldset>
+
+    <label class="share">
+      <input type="checkbox" [checked]="shared()" (change)="shared.set($any($event.target).checked)" />
+      <span class="body">Partager ce sage avec les autres joueurs, sous ton pseudo</span>
+    </label>
+  </div>
+
+  <aside class="preview" aria-label="Aperçu">
+    <p class="cds-label">Aperçu</p>
+    <app-sage-card [sage]="preview()" [preview]="true" />
+    <div class="actions">
+      <button type="button" class="cds-btn cds-btn--ghost" (click)="cancelled.emit()">Annuler</button>
+      <button type="submit" class="cds-btn cds-btn--primary" [disabled]="!valid() || saving()">
+        {{ initial() ? 'Enregistrer' : 'Créer le sage' }}
+      </button>
+    </div>
+  </aside>
+</form>

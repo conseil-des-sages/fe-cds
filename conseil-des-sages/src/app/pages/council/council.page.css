@@ -1,0 +1,184 @@
+.room {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  height: 100dvh;
+  overflow: hidden;
+  padding: var(--nav-offset) var(--space-6) var(--space-4);
+}
+
+.question {
+  flex-shrink: 0;
+  width: min(100%, 880px);
+  margin-inline: auto;
+  text-align: center;
+}
+
+h1 {
+  margin: 0;
+  text-wrap: balance;
+}
+
+.status {
+  margin: var(--space-1) 0 0;
+  color: var(--ink-muted);
+}
+
+.review {
+  padding: 0 var(--space-8) var(--space-8);
+}
+
+.scribe-card {
+  width: min(100%, 760px);
+}
+
+/* Assez de place sur les côtés : le Greffier se tient à l'écart de la table */
+@media (min-width: 1360px) {
+  .scribe-card {
+    position: absolute;
+    bottom: var(--space-6);
+    left: var(--space-6);
+    z-index: 2;
+    width: 260px;
+  }
+}
+
+.stage {
+  flex: 1;
+  width: min(100%, 1040px);
+  min-height: 0;
+  margin-inline: auto;
+}
+
+.center {
+  display: grid;
+  place-items: center;
+  width: min(100% - 280px, 560px);
+  /* La place laissée entre les sièges du haut et du bas : avatar et nom compris */
+  height: max(120px, calc(72% - 140px));
+  min-height: 0;
+}
+
+.center app-intervention-panel {
+  height: auto;
+  max-height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.scribe {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-6);
+  border-radius: var(--radius-xl);
+  color: var(--info);
+}
+
+.scribe p,
+.waiting {
+  margin: 0;
+}
+
+.waiting {
+  color: var(--info);
+}
+
+.bottom {
+  display: grid;
+  flex-shrink: 0;
+  justify-items: center;
+  gap: var(--space-2);
+}
+
+.progress {
+  width: min(100%, 760px);
+}
+
+.tools {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-1);
+}
+
+.failure {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-3);
+}
+
+.failure p {
+  margin: 0;
+  color: var(--danger);
+}
+
+.center-note {
+  display: grid;
+  flex: 1;
+  place-content: center;
+  justify-items: center;
+  gap: var(--space-4);
+  margin: 0;
+  text-align: center;
+}
+
+.center-note p {
+  margin: 0;
+}
+
+@media (min-width: 768px) and (max-width: 1023px) {
+  .center {
+    width: min(100% - 360px, 560px);
+  }
+}
+
+/* Écran peu haut : les sièges et le titre se resserrent pour laisser la place au débat */
+@media (min-width: 768px) and (max-height: 800px) {
+  .stage {
+    --avatar-size: 48px;
+  }
+  .room {
+    gap: var(--space-2);
+    padding-bottom: var(--space-2);
+  }
+  h1 {
+    display: -webkit-box;
+    overflow: hidden;
+    font-size: 22px;
+    line-height: 28px;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+  }
+}
+
+@media (max-width: 767px) {
+  .room {
+    gap: var(--space-2);
+    padding: var(--space-6) var(--space-4) var(--space-3);
+  }
+  /* Le burger occupe le coin droit : la question lui laisse la place */
+  .review {
+    padding-inline: var(--space-4);
+  }
+  .question {
+    padding-right: var(--space-12);
+    text-align: left;
+  }
+  .center {
+    width: 100%;
+    height: 100%;
+    align-self: stretch;
+  }
+  .tools .cds-btn {
+    padding-inline: var(--space-2);
+    font-size: 13px;
+  }
+  /* Sur une seule ligne, avec ou sans « Préciser » : le cercle ne saute pas quand ce bouton disparaît */
+  .tools app-icon {
+    display: none;
+  }
+}

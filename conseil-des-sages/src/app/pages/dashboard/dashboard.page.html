@@ -1,87 +1,45 @@
 <div class="page">
-  <div class="layout">
-    <main class="chat" aria-labelledby="ask-title">
-      <div class="welcome">
-        <div class="welcome-msg glass">
-          <p class="from">Le conseil</p>
-          <p>
-            Nous sommes cinq, et nous ne serons pas d’accord, c’est le but.
-            Expose-nous ton dilemme, nous en débattrons devant toi.
-          </p>
+  <main class="column">
+    <h1 class="display-l title">Quelle décision t’attend ?</h1>
+
+    @switch (store.state()) {
+      @case ('error') {
+        <div class="cds-glass cds-glass--strong notice" role="alert">
+          <p class="body">Une erreur est survenue, on relance ?</p>
+          <button type="button" class="cds-btn" (click)="store.load()">Réessayer</button>
         </div>
-      </div>
-
-      <h1 id="ask-title" class="ask">Quelle décision veux-tu soumettre au conseil ?</h1>
-
-      <form class="composer glass glass--strong" (submit)="$event.preventDefault(); send()">
-        <label class="sr-only" for="decision">Ta décision</label>
-        <textarea
-          id="decision"
-          class="composer-input"
-          rows="3"
-          maxlength="400"
-          placeholder="Quelle décision veux-tu soumettre au conseil ?"
-          [value]="draft()"
-          (input)="draft.set($any($event.target).value)"
-          (keydown)="onKeydown($event)"
-        ></textarea>
-        <div class="composer-bar">
-          <span class="hint">Entrée pour lancer · Maj + Entrée pour aller à la ligne</span>
-          <button type="submit" class="send" [disabled]="!canSend()" aria-label="Lancer le débat">
-            <app-icon name="arrow-up" [size]="22" [stroke]="2.25" />
-          </button>
-        </div>
-      </form>
-
-      <div class="suggestions" aria-label="Exemples de décisions">
-        @for (s of suggestions; track s) {
-          <button type="button" class="suggestion" (click)="draft.set(s)">{{ s }}</button>
+      }
+      @default {
+        <app-prompt-input
+          [council]="store.council()"
+          [starting]="starting()"
+          [ready]="store.state() === 'ready'"
+          (customize)="customizing.set(true)"
+          (submitted)="start($event)"
+        />
+        @if (error()) {
+          <p class="cds-error" role="alert">{{ error() }}</p>
         }
-      </div>
+      }
+    }
+    @if (recent().length) {
+      <app-recent-debates [debates]="recent()" />
+    }
+  </main>
 
-      <section class="council glass glass--subtle" aria-label="Ton conseil actuel">
-        <div class="council-faces">
-          <ul class="stack">
-            @for (s of store.council(); track s.id) {
-              <li><app-sage-avatar [icon]="s.icon" [color]="s.color" [name]="s.name" [size]="40" /></li>
-            }
-          </ul>
-          <div class="council-text">
-            <p class="council-title">Ton conseil</p>
-            <p class="council-names">{{ councilNames() }}</p>
-          </div>
-        </div>
-        <button type="button" class="btn btn--glass btn--sm" (click)="openCustomize()">
-          <app-icon name="sliders" [size]="16" />
-          Personnaliser le conseil
-        </button>
-      </section>
-    </main>
-
-    <aside class="side glass" aria-labelledby="trends-title">
-      <div class="trends">
-        <h2 id="trends-title" class="trends-title">
-          <app-icon name="trending" [size]="16" />
-          Tendances
-        </h2>
-        <ol class="trend-list">
-          @for (t of trends; track t.label) {
-            <li class="trend">
-              <span class="trend-row">
-                <span>{{ t.label }}</span>
-                <span class="trend-val">{{ t.share }} %</span>
-              </span>
-              <span class="trend-bar" aria-hidden="true"><span [style.width.%]="t.share * 2.6"></span></span>
-            </li>
-          }
-        </ol>
-      </div>
-    </aside>
-  </div>
+  @if (stats(); as trends) {
+    <app-trend-card [stats]="trends" />
+  }
 </div>
 
-<dialog #dialog class="modal" aria-labelledby="customize-title" (close)="dialogOpen.set(false)">
-  @if (dialogOpen()) {
-    <app-customize-council [initialView]="dialogView()" (close)="dialogOpen.set(false)" />
+<app-modal
+  heading="Personnaliser le conseil"
+  subtitle="Choisis les voix qui débattront de ta décision."
+  [wide]="true"
+  [open]="customizing()"
+  (closed)="customizing.set(false)"
+>
+  @if (customizing()) {
+    <app-customize-council (done)="customizing.set(false)" />
   }
-</dialog>
+</app-modal>

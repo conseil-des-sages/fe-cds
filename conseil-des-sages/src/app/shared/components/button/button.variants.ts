@@ -3,20 +3,9 @@ import { cva, type VariantProps } from 'class-variance-authority';
 import { mergeClasses } from '@/shared/utils/merge-classes';
 
 const glass =
-  'border-[color:var(--glass-border)] bg-[var(--glass-2)] text-foreground ' +
-  'backdrop-blur-[var(--blur-1)] backdrop-saturate-150 ' +
-  'shadow-[inset_0_1px_0_var(--glass-highlight),var(--glass-shadow)] ' +
-  'hover:border-[color:var(--glass-border-strong)] ' +
-  'hover:bg-[color-mix(in_srgb,var(--glass-2),var(--text)_8%)]';
-
-const glassStrong =
-  'border-[color:color-mix(in_srgb,var(--primary)_40%,transparent)] ' +
-  'bg-[color-mix(in_srgb,var(--primary)_22%,transparent)] text-foreground ' +
-  'backdrop-blur-[var(--blur-1)] backdrop-saturate-150 ' +
-  'shadow-[inset_0_1px_0_var(--glass-highlight),var(--glass-shadow)] ' +
-  'hover:border-[color:color-mix(in_srgb,var(--primary)_60%,transparent)] ' +
-  'hover:bg-[color-mix(in_srgb,var(--primary)_32%,transparent)]';
-
+  'border-[color:var(--glass-border)] bg-[var(--glass)] text-foreground ' +
+  'backdrop-blur-[var(--blur-sm)] backdrop-saturate-[140%] ' +
+  'shadow-[var(--shadow-float)] hover:bg-[var(--glass-hover)]';
 
 export const buttonVariants = cva(
   mergeClasses(
@@ -25,13 +14,13 @@ export const buttonVariants = cva(
   {
     variants: {
       zType: {
-        default: glassStrong,
+        default: glass,
         destructive:
-          'bg-destructive/15 text-destructive backdrop-blur-[var(--blur-1)] hover:bg-destructive/25 ' +
+          'bg-destructive/15 text-destructive backdrop-blur-[var(--blur-sm)] hover:bg-destructive/25 ' +
           'border-destructive/30 focus-visible:border-destructive/40 focus-visible:ring-destructive/20',
         outline:
-          glass + ' bg-transparent aria-expanded:bg-[var(--glass-2)]',
-        secondary: glass + ' aria-expanded:bg-[var(--glass-2)]',
+          glass + ' bg-transparent aria-expanded:bg-[var(--glass-hover)]',
+        secondary: glass + ' aria-expanded:bg-[var(--glass-hover)]',
         ghost:
           'hover:bg-accent hover:text-foreground aria-expanded:bg-accent aria-expanded:text-foreground',
         link: 'text-primary underline-offset-4 hover:underline',
