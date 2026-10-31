@@ -1,0 +1,121 @@
+<main class="room">
+  @switch (room.phase()) {
+    @case ('loading') {
+      <p class="body-l center-note" role="status">Le conseil se réunit…</p>
+    }
+    @case ('missing') {
+      <div class="center-note">
+        <p class="body-l">Ce débat est introuvable.</p>
+        <a routerLink="/app" class="cds-btn">Revenir au conseil</a>
+      </div>
+    }
+    @default {
+      <header class="question">
+        <h1 class="heading-1" [title]="room.debate()?.question">{{ room.debate()?.question }}</h1>
+        <p class="caption status">{{ room.statusLine() }}</p>
+      </header>
+
+      @if (room.showSynthesis()) {
+        <app-synthesis-view class="stage" [synthesis]="room.synthesis()!" />
+      } @else {
+        <app-council-ring
+          class="stage"
+          [sages]="room.sages()"
+          [activeId]="activeId()"
+          [thinkingId]="thinkingId()"
+          [avatarSize]="64"
+          [rx]="44"
+          [ry]="36"
+          [notes]="room.seatNotes()"
+          (seatOpened)="reviewedId.set($event)"
+        >
+          <div class="center">
+            @if (room.isScribing()) {
+              <div class="cds-glass cds-glass--strong scribe" role="status">
+                <app-icon name="feather" />
+                <p class="body-l">Le Greffier rédige la synthèse…</p>
+              </div>
+            } @else if (room.speaker(); as speaker) {
+              <app-intervention-panel
+                [sage]="speaker"
+                [text]="room.player.revealed()"
+                [thinking]="room.isThinking()"
+                [typing]="room.isTurnOpen()"
+                [repliesTo]="repliesTo()"
+                [stepLabel]="stepLabel()"
+              />
+            } @else if (room.phase() === 'finished') {
+              <div class="cds-glass cds-glass--strong scribe">
+                <p class="body-l">Ce débat n’a pas de synthèse.</p>
+              </div>
+            } @else if (room.phase() === 'live') {
+              <p class="body-l waiting" role="status">Le conseil se réunit…</p>
+            }
+          </div>
+        </app-council-ring>
+      }
+
+      <footer class="bottom">
+        @if (!room.showSynthesis() && room.debate()?.scribe; as scribe) {
+          <app-scribe-card
+            class="scribe-card"
+            [scribe]="scribe"
+            [notes]="room.visibleNotes()"
+            [writing]="room.isScribing()"
+            (opened)="reviewedId.set(scribe.id)"
+          />
+        }
+        @if (room.phase() === 'failed') {
+          <div class="failure" role="alert">
+            <p class="body">{{ room.failure() }}</p>
+            <button type="button" class="cds-btn cds-btn--primary cds-btn--sm" (click)="room.retry()">On relance ?</button>
+          </div>
+        }
+        <app-step-progress class="progress" [steps]="room.steps()" />
+        @if (interjecting() && room.phase() === 'live') {
+          <app-interject-form (closed)="interjecting.set(false)" />
+        }
+        <div class="tools">
+          @if (!room.showSynthesis()) {
+            <button type="button" class="cds-btn cds-btn--ghost cds-btn--sm" (click)="room.player.togglePause()">
+              <app-icon [name]="room.player.paused() ? 'play' : 'pause'" [size]="16" />
+              {{ room.player.paused() ? 'Reprendre' : 'Pause' }}
+            </button>
+            <button type="button" class="cds-btn cds-btn--ghost cds-btn--sm" [disabled]="room.player.drained()" (click)="room.player.skip()">
+              <app-icon name="skip" [size]="16" /> Passer
+            </button>
+          }
+          @if (room.phase() === 'live' && !interjecting()) {
+            <button type="button" class="cds-btn cds-btn--ghost cds-btn--sm" (click)="interjecting.set(true)">
+              <app-icon name="message" [size]="16" /> Préciser
+            </button>
+          }
+          <button type="button" class="cds-btn cds-btn--ghost cds-btn--sm" (click)="transcriptOpen.set(true)">
+            <app-icon name="history" [size]="16" /> Fil du débat
+          </button>
+          @if (room.showSynthesis()) {
+            <button type="button" class="cds-btn cds-btn--ghost cds-btn--sm" (click)="room.replay()">
+              <app-icon name="rotate" [size]="16" /> Revoir le débat
+            </button>
+          }
+        </div>
+      </footer>
+    }
+  }
+</main>
+
+<app-modal heading="Le fil du débat" [open]="transcriptOpen()" (closed)="transcriptOpen.set(false)">
+  @if (transcriptOpen()) {
+    <app-transcript [steps]="room.transcript()" [sages]="room.sages()" [scribe]="room.debate()?.scribe ?? null" [notes]="room.debate()?.notes ?? []" />
+  }
+</app-modal>
+
+<app-modal [heading]="reviewedSage()?.name ?? ''" [open]="!!reviewedSage()" (closed)="reviewedId.set(null)">
+  @if (reviewedSage(); as sage) {
+    <app-seat-notes
+      class="review"
+      [notes]="reviewedNotes()"
+      [emptyText]="sage.id === room.debate()?.scribe?.id ? 'Il n’a encore rien noté.' : 'N’a pas encore parlé.'"
+    />
+  }
+</app-modal>

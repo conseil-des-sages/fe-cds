@@ -1,225 +1,47 @@
 @layer ng-icon, theme, base, components, utilities;
 @import 'tailwindcss';
 @import './app/shared/core/css/zard';
+@import './styles/tokens.css';
+@import './styles/typography.css';
+@import './styles/kit.css';
 @plugin "tailwindcss-animate";
 
 /* Dark = défaut (aucun data-theme) ou data-theme="dark". Light = data-theme="light" sur <html>. */
 @custom-variant dark (&:where(:root:not([data-theme='light']), :root:not([data-theme='light']) *));
 
 /* =====================================================================
-   1. TES TOKENS (source de vérité du design)
+   PONT ZARD UI / TAILWIND -> TOKENS DU DESIGN SYSTEM
+   Le design system réserve --accent à l'action principale : les couleurs
+   attendues par Zard sont donc déclarées ici, sans redéfinir de token.
    ===================================================================== */
-:root,
-[data-theme='dark'] {
-  color-scheme: dark;
-
-  /* Backdrop gradient: nuit -> violet -> magenta */
-  --bg-1: #0b0e2a;
-  --bg-2: #1b1347;
-  --bg-3: #3a1555;
-  --blob-a: #4338ca;
-  --blob-b: #8b2fd6;
-  --blob-c: #d0307f;
-  --blob-opacity: 0.42;
-
-  /* Glass levels — opacity rises with importance / text length.
-     Level 3 is tinted dark (not white) so long text keeps AA+ contrast. */
-  --glass-1: rgba(255, 255, 255, 0.05);
-  --glass-2: rgba(255, 255, 255, 0.085);
-  --glass-3: rgba(19, 15, 50, 0.74);
-  --glass-4: rgba(15, 12, 40, 0.9);
-  --glass-border: rgba(255, 255, 255, 0.14);
-  --glass-border-strong: rgba(255, 255, 255, 0.24);
-  --glass-highlight: rgba(255, 255, 255, 0.08);
-  --glass-shadow: 0 10px 40px -8px rgba(4, 2, 20, 0.55);
-  --scrim: rgba(8, 6, 28, 0.45);
-
-  /* Text */
-  --text: #f5f3ff;
-  --text-2: #cbc6e8;
-  --text-3: #a9a3d1;
-
-  /* Brand: pearl primary + rose accent (focus, highlights)
-     --accent est renommé --brand-accent : Zard utilise --accent pour les fonds de survol. */
-  --primary: #f5f3ff;
-  --primary-fg: #1a1340;
-  --brand-accent: #f9a8d4;
-
-  /* Sage palette (dark) — all >= 5:1 on glass levels 2-3 */
-  --sage-bleu: #7cb4ff;
-  --sage-orange: #ffa463;
-  --sage-vert: #4bde9e;
-  --sage-rouge: #ff8089;
-  --sage-violet: #c9a5ff;
-  --sage-cyan: #5fdde5;
-  --sage-rose: #ff92cc;
-  --sage-ambre: #f4c752;
-}
-
-[data-theme='light'] {
-  color-scheme: light;
-
-  --bg-1: #eef0ff;
-  --bg-2: #f2eaff;
-  --bg-3: #fde8f3;
-  --blob-a: #a5b4fc;
-  --blob-b: #d8b4fe;
-  --blob-c: #f9a8d4;
-  --blob-opacity: 0.6;
-
-  --glass-1: rgba(255, 255, 255, 0.32);
-  --glass-2: rgba(255, 255, 255, 0.52);
-  --glass-3: rgba(255, 255, 255, 0.8);
-  --glass-4: rgba(255, 255, 255, 0.92);
-  --glass-border: rgba(255, 255, 255, 0.75);
-  --glass-border-strong: rgba(255, 255, 255, 0.95);
-  --glass-highlight: rgba(255, 255, 255, 0.6);
-  --glass-shadow: 0 10px 40px -10px rgba(76, 52, 140, 0.22);
-  --scrim: rgba(230, 224, 250, 0.4);
-
-  --text: #17132e;
-  --text-2: #3e3960;
-  --text-3: #575273;
-
-  --primary: #1f1a3d;
-  --primary-fg: #ffffff;
-  --brand-accent: #b0185a;
-
-  --sage-bleu: #1c58bd;
-  --sage-orange: #9a4506;
-  --sage-vert: #036a4a;
-  --sage-rouge: #be2533;
-  --sage-violet: #7136d9;
-  --sage-cyan: #0b6b7c;
-  --sage-rose: #b0185a;
-  --sage-ambre: #7f5606;
-}
-
-:root {
-  --font-display: 'Fraunces', 'Iowan Old Style', Georgia, serif;
-  --font-body: 'Atkinson Hyperlegible Next', 'Atkinson Hyperlegible', system-ui, sans-serif;
-
-  --r-sm: 12px;
-  --r-md: 18px;
-  --r-lg: 26px;
-  --r-xl: 34px;
-  --r-pill: 999px;
-
-  --blur-1: 14px;
-  --blur-2: 22px;
-  --blur-3: 30px;
-
-  --ease: cubic-bezier(0.22, 1, 0.36, 1);
-
-  --radius: var(--r-sm);
-}
-
-/* =====================================================================
-   2. PONT TOKENS ZARD UI -> TES TOKENS
-   Déclaré sur chaque sélecteur de thème pour que les var() se
-   recalculent au changement de data-theme.
-   ===================================================================== */
-:root,
-[data-theme='dark'],
-[data-theme='light'] {
-  --background: var(--bg-1);
-  --foreground: var(--text);
-
-  --card: var(--glass-2);
-  --card-foreground: var(--text);
-  --popover: var(--glass-4);
-  --popover-foreground: var(--text);
-
-  /* --primary est déjà défini ci-dessus (perle) */
-  --primary-foreground: var(--primary-fg);
-  --secondary: var(--glass-2);
-  --secondary-foreground: var(--text);
-  --muted: var(--glass-1);
-  --muted-foreground: var(--text-3);
-
-  /* Zard : fond de survol/sélection discret (pas ton rose) */
-  --accent: var(--glass-2);
-  --accent-foreground: var(--text);
-
-  --destructive: var(--sage-rouge);
-  --destructive-foreground: var(--primary-fg);
-
-  --border: var(--glass-border);
-  --input: var(--glass-border-strong);
-  --ring: var(--brand-accent);
-
-  --chart-1: var(--sage-bleu);
-  --chart-2: var(--sage-violet);
-  --chart-3: var(--sage-rose);
-  --chart-4: var(--sage-ambre);
-  --chart-5: var(--sage-vert);
-
-  --sidebar: var(--glass-3);
-  --sidebar-foreground: var(--text);
-  --sidebar-primary: var(--primary);
-  --sidebar-primary-foreground: var(--primary-fg);
-  --sidebar-accent: var(--glass-2);
-  --sidebar-accent-foreground: var(--text);
-  --sidebar-border: var(--glass-border);
-  --sidebar-ring: var(--brand-accent);
-
-  --fs-tiny: 0.75rem;                      
-  --fs-small: 0.875rem;                    
-  --fs-medium: 1.125rem;                
-  --fs-large: clamp(1.5rem, 7.0vw, 2rem); 
-  --fs-display: clamp(2.75rem, 13vw, 5rem);
-}
-
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --color-card: var(--card);
-  --color-card-foreground: var(--card-foreground);
-  --color-popover: var(--popover);
-  --color-popover-foreground: var(--popover-foreground);
-  --color-primary: var(--primary);
-  --color-primary-foreground: var(--primary-foreground);
-  --color-secondary: var(--secondary);
-  --color-secondary-foreground: var(--secondary-foreground);
-  --color-muted: var(--muted);
-  --color-muted-foreground: var(--muted-foreground);
-  --color-accent: var(--accent);
-  --color-accent-foreground: var(--accent-foreground);
-  --color-destructive: var(--destructive);
-  --color-destructive-foreground: var(--destructive-foreground);
-  --color-border: var(--border);
-  --color-input: var(--input);
-  --color-ring: var(--ring);
-  --color-chart-1: var(--chart-1);
-  --color-chart-2: var(--chart-2);
-  --color-chart-3: var(--chart-3);
-  --color-chart-4: var(--chart-4);
-  --color-chart-5: var(--chart-5);
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) + 4px);
-  --color-sidebar: var(--sidebar);
-  --color-sidebar-foreground: var(--sidebar-foreground);
-  --color-sidebar-primary: var(--sidebar-primary);
-  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
-  --color-sidebar-accent: var(--sidebar-accent);
-  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
-  --color-sidebar-border: var(--sidebar-border);
-  --color-sidebar-ring: var(--sidebar-ring);
+  --color-background: var(--bg);
+  --color-foreground: var(--ink);
+  --color-card: var(--glass);
+  --color-card-foreground: var(--ink);
+  --color-popover: var(--glass-strong);
+  --color-popover-foreground: var(--ink);
+  --color-primary: var(--accent);
+  --color-primary-foreground: var(--on-accent);
+  --color-secondary: var(--glass);
+  --color-secondary-foreground: var(--ink);
+  --color-muted: var(--glass);
+  --color-muted-foreground: var(--ink-subtle);
+  --color-accent: var(--glass-hover);
+  --color-accent-foreground: var(--ink);
+  --color-destructive: var(--danger);
+  --color-destructive-foreground: var(--on-accent);
+  --color-border: var(--glass-border);
+  --color-input: var(--glass-border);
+  --color-ring: var(--focus-ring);
 
-  /* Tes tokens exposés comme classes Tailwind : text-brand-accent, bg-sage-bleu, font-heading... */
-  --color-brand-accent: var(--brand-accent);
-  --color-sage-bleu: var(--sage-bleu);
-  --color-sage-orange: var(--sage-orange);
-  --color-sage-vert: var(--sage-vert);
-  --color-sage-rouge: var(--sage-rouge);
-  --color-sage-violet: var(--sage-violet);
-  --color-sage-cyan: var(--sage-cyan);
-  --color-sage-rose: var(--sage-rose);
-  --color-sage-ambre: var(--sage-ambre);
-  --font-sans: var(--font-body);
-  --font-heading: var(--font-display);
+  --radius-sm: 10px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+  --radius-xl: 32px;
+
+  --font-sans: 'Manrope', system-ui, sans-serif;
+  --font-heading: 'Fraunces', Georgia, serif;
 
   --text-tiny: var(--fs-tiny);
   --text-small: var(--fs-small);
@@ -229,7 +51,7 @@
 }
 
 /* =====================================================================
-   3. BASE (Zard + tes règles)
+   BASE
    ===================================================================== */
 @layer base {
   * {
@@ -237,20 +59,25 @@
   }
 
   html {
-    background: var(--bg-1);
-    color: var(--text);
-    font-family: var(--font-body);
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--font-sans);
     font-size: 16px;
-    line-height: 1.55;
+    line-height: 24px;
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
   }
 
-  /* Pas de bg-background ici : le fond dégradé du backdrop doit rester visible */
+  /* Le fond et ses orbes viennent de <app-backdrop> : body reste transparent */
   body {
     @apply text-foreground;
     margin: 0;
     min-height: 100dvh;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--focus-ring);
+    outline-offset: 2px;
   }
 
   input[type='number']::-webkit-inner-spin-button,
@@ -265,6 +92,9 @@
   }
 }
 
+/* =====================================================================
+   TRANSITION DE THÈME (révélation circulaire depuis le bouton)
+   ===================================================================== */
 ::view-transition-old(root),
 ::view-transition-new(root) {
   animation: none;
@@ -277,50 +107,9 @@
 
 @keyframes theme-reveal {
   from { clip-path: circle(0 at var(--tx, 50%) var(--ty, 0)); }
-  to   { clip-path: circle(var(--tr, 150%) at var(--tx, 50%) var(--ty, 0)); }
+  to { clip-path: circle(var(--tr, 150%) at var(--tx, 50%) var(--ty, 0)); }
 }
 
 @media (prefers-reduced-motion: reduce) {
   ::view-transition-new(root) { animation: none; }
 }
-
-/* Primitives shared by the imported pages from the conception project. */
-.glass {
-  background: var(--glass-2);
-  -webkit-backdrop-filter: blur(22px) saturate(140%);
-  backdrop-filter: blur(22px) saturate(140%);
-  border: 1px solid var(--glass-border);
-  border-radius: var(--r-lg);
-  box-shadow: var(--glass-shadow), inset 0 1px 0 var(--glass-highlight);
-}
-
-.glass--strong { background: var(--glass-3); border-color: var(--glass-border-strong); }
-.glass--subtle { background: var(--glass-1); }
-.glass--solid { background: var(--glass-4); border-color: var(--glass-border-strong); }
-
-.btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  min-height: 2.75rem;
-  padding: 0 1.25rem;
-  border: 1px solid transparent;
-  border-radius: var(--r-pill);
-  font-weight: 600;
-  text-decoration: none;
-  white-space: nowrap;
-}
-
-.btn--primary { background: var(--primary); color: var(--primary-fg); }
-.btn--glass { background: var(--glass-2); border-color: var(--glass-border); color: var(--text); }
-.btn--ghost { background: transparent; color: var(--text-2); }
-.btn--sm { min-height: 2.25rem; padding: 0 0.875rem; font-size: 0.875rem; }
-.btn--lg { min-height: 3.375rem; padding: 0 1.75rem; font-size: 1rem; }
-
-.segmented { display: inline-flex; gap: 0.25rem; padding: 0.25rem; border: 1px solid var(--glass-border); border-radius: var(--r-pill); background: var(--glass-1); }
-.segmented button { min-height: 2.375rem; padding: 0 1rem; border: 0; border-radius: var(--r-pill); background: transparent; color: var(--text-2); }
-.segmented button[aria-selected='true'] { background: var(--primary); color: var(--primary-fg); }
-.input, .textarea, .select { width: 100%; min-height: 3rem; padding: 0.75rem 1rem; border: 1px solid var(--glass-border); border-radius: var(--r-md); background: var(--glass-3); color: var(--text); }
-.hint { color: var(--text-3); font-size: 0.875rem; }
-.scroll-y { overflow-y: auto; scrollbar-width: thin; }

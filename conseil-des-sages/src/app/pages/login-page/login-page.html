@@ -1,132 +1,101 @@
 <div class="page">
-  <main class="card glass glass--strong" aria-labelledby="auth-title">
-    <img class="brand-logo" src="logo.png" alt="Logo du Conseil des Sages">
+  <main class="cds-glass cds-glass--strong card" aria-labelledby="auth-title">
+    <img class="logo" src="logo.png" alt="">
 
     <header class="intro">
-      <h1 id="auth-title">
-        {{ mode() === 'connexion' ? 'Bon retour au conseil' : 'Rejoins le Conseil' }}
+      <h1 id="auth-title" class="heading-1">
+        {{ mode() === 'connexion' ? 'Bon retour au conseil' : 'Rejoins le conseil' }}
       </h1>
-      <p>
-        {{ mode() === 'connexion'
-          ? 'Tes sages t’attendent. Reprends là où tu t’étais arrêté·e.'
-          : 'Crée ton compte pour retrouver les sages.' }}
+      <p class="body">
+        {{ mode() === 'connexion' ? 'Tes sages t’attendent.' : 'Crée ton compte pour réunir tes sages.' }}
       </p>
     </header>
 
-    <div class="tabs" role="tablist" aria-label="Mode d’authentification">
-      <button
-        type="button"
-        role="tab"
-        [attr.aria-selected]="mode() === 'connexion'"
-        [class.active]="mode() === 'connexion'"
-        (click)="setMode('connexion')"
-      >
-        Connexion
-      </button>
-      <button
-        type="button"
-        role="tab"
-        [attr.aria-selected]="mode() === 'inscription'"
-        [class.active]="mode() === 'inscription'"
-        (click)="setMode('inscription')"
-      >
-        Inscription
-      </button>
+    <div class="cds-segmented tabs" role="tablist" aria-label="Connexion ou inscription">
+      <button type="button" role="tab" [attr.aria-selected]="mode() === 'connexion'" (click)="setMode('connexion')">Connexion</button>
+      <button type="button" role="tab" [attr.aria-selected]="mode() === 'inscription'" (click)="setMode('inscription')">Inscription</button>
     </div>
 
     <form class="form" [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
       @if (mode() === 'inscription') {
-        <label class="field" for="pseudo">
-          <span>Pseudo</span>
+        <div class="cds-field">
+          <label class="cds-field__label" for="pseudo">Pseudo</label>
           <input
             id="pseudo"
+            class="cds-input"
             type="text"
             formControlName="pseudo"
             placeholder="Camille"
             autocomplete="nickname"
             maxlength="40"
-            minlength="2"
-            required
             [attr.aria-invalid]="shouldShowError('pseudo')"
             [attr.aria-describedby]="shouldShowError('pseudo') ? 'pseudo-error' : null"
           >
-        </label>
-        @if (shouldShowError('pseudo')) {
-          <p class="error" id="pseudo-error">{{ errorText('pseudo') }}</p>
-        }
+          @if (shouldShowError('pseudo')) {
+            <p class="cds-error" id="pseudo-error">{{ errorText('pseudo') }}</p>
+          }
+        </div>
       }
 
-      <label class="field" for="email">
-        <span>Email</span>
+      <div class="cds-field">
+        <label class="cds-field__label" for="email">Email</label>
         <input
           id="email"
+          class="cds-input"
           type="email"
           formControlName="email"
           placeholder="camille.moreau@mail.fr"
           autocomplete="email"
-          required
           [attr.aria-invalid]="shouldShowError('email')"
           [attr.aria-describedby]="shouldShowError('email') ? 'email-error' : null"
         >
-      </label>
-      @if (shouldShowError('email')) {
-        <p class="error" id="email-error">{{ errorText('email') }}</p>
-      }
+        @if (shouldShowError('email')) {
+          <p class="cds-error" id="email-error">{{ errorText('email') }}</p>
+        }
+      </div>
 
-      <div class="password-group">
-        <div class="field-heading">
-          <label for="password">Mot de passe</label>
-          @if (mode() === 'connexion') {
-            <button class="forgot" type="button">Mot de passe oublié ?</button>
-          }
-        </div>
-        <div class="password-input">
+      <div class="cds-field">
+        <label class="cds-field__label" for="password">Mot de passe</label>
+        <div class="password">
           <input
             id="password"
+            class="cds-input"
             [type]="showPassword() ? 'text' : 'password'"
             formControlName="password"
-            placeholder="••••••••••"
             [autocomplete]="mode() === 'connexion' ? 'current-password' : 'new-password'"
-            [attr.minlength]="mode() === 'inscription' ? 8 : null"
-            required
             [attr.aria-invalid]="shouldShowError('password')"
             [attr.aria-describedby]="shouldShowError('password') ? 'password-error' : null"
           >
           <button
-            class="visibility"
+            class="cds-btn cds-btn--ghost cds-btn--icon visibility"
             type="button"
             [attr.aria-label]="showPassword() ? 'Masquer le mot de passe' : 'Afficher le mot de passe'"
             (click)="togglePasswordVisibility()"
           >
-            <svg viewBox="0 0 24 24" aria-hidden="true">
-              <path d="M2 12s3.6-6 10-6 10 6 10 6-3.6 6-10 6S2 12 2 12Z" />
-              <circle cx="12" cy="12" r="3" />
-            </svg>
+            <app-icon [name]="showPassword() ? 'eye-off' : 'eye'" />
           </button>
         </div>
         @if (shouldShowError('password')) {
-          <p class="error" id="password-error">{{ errorText('password') }}</p>
+          <p class="cds-error" id="password-error">{{ errorText('password') }}</p>
         }
       </div>
 
-      <button class="submit" type="submit" [disabled]="pending()">
-        {{ pending() ? 'Connexion au serveur…' : mode() === 'connexion' ? 'Se connecter' : 'Créer mon compte' }}
-        <svg viewBox="0 0 24 24" aria-hidden="true">
-          <path d="M5 12h14M13 6l6 6-6 6" />
-        </svg>
+      <button class="cds-btn cds-btn--primary submit" type="submit" [disabled]="pending()">
+        @if (pending()) {
+          Un instant…
+        } @else {
+          {{ mode() === 'connexion' ? 'Se connecter' : 'Créer mon compte' }}
+          <app-icon name="arrow-right" />
+        }
       </button>
       @if (authError()) {
-        <p class="error server-error" role="alert">{{ authError() }}</p>
+        <p class="cds-error server-error" role="alert">{{ authError() }}</p>
       }
     </form>
 
-    <p class="switch-mode">
+    <p class="body switch-mode">
       {{ mode() === 'connexion' ? 'Pas encore de compte ?' : 'Déjà un compte ?' }}
-      <button
-        class="signup-link"
-        type="button"
-        (click)="setMode(mode() === 'connexion' ? 'inscription' : 'connexion')"
-      >
+      <button class="link" type="button" (click)="setMode(mode() === 'connexion' ? 'inscription' : 'connexion')">
         {{ mode() === 'connexion' ? 'Inscris-toi' : 'Connecte-toi' }}
       </button>
     </p>

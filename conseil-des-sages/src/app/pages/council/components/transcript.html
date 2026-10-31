@@ -1,0 +1,34 @@
+<div class="thread">
+  @for (section of sections(); track section.step.id) {
+    <section class="step">
+      <h3 class="cds-label">{{ section.step.name }}</h3>
+      @for (entry of section.entries; track entry.message.id) {
+        @let message = entry.message;
+        <article class="message" [class.message--user]="message.fromUser">
+          @if (author(message); as sage) {
+            <app-sage-avatar [icon]="sage.icon" [color]="sage.color" [size]="32" [decorative]="true" />
+          }
+          <div class="bubble">
+            <p class="heading-3 who" [style.color]="author(message) ? 'var(--sage-' + author(message)!.color + ')' : null">
+              {{ message.fromUser ? 'Toi' : message.authorName }}
+              @if (repliedSage(message); as other) {
+                <span class="caption reply"><app-icon name="reply" [size]="16" />répond {{ replyLabel(other.name) }}</span>
+              }
+            </p>
+            <p class="body text">{{ message.content }}</p>
+          </div>
+        </article>
+        @for (note of entry.notes; track note.id) {
+          <aside class="remark">
+            @if (scribe(); as greffier) {
+              <app-sage-avatar [icon]="greffier.icon" [color]="greffier.color" [size]="32" [decorative]="true" />
+            }
+            <p class="body"><span class="caption remark-who">Le Greffier</span> {{ note.content }}</p>
+          </aside>
+        }
+      }
+    </section>
+  } @empty {
+    <p class="body empty">Le débat n’a pas encore commencé.</p>
+  }
+</div>

@@ -1,0 +1,39 @@
+:host {
+  display: inline-flex;
+  flex-shrink: 0;
+}
+
+.is-thinking::after {
+  content: '';
+  position: absolute;
+  inset: -7px;
+  border-radius: var(--radius-full);
+  border: 2px dashed color-mix(in srgb, var(--sage) 75%, transparent);
+  animation: spin 7s linear infinite;
+}
+
+.is-selected {
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--sage) 30%, transparent);
+}
+
+.tick {
+  position: absolute;
+  right: -4px;
+  bottom: -4px;
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  border-radius: var(--radius-full);
+  background: var(--sage);
+  color: var(--bg);
+  border: 2px solid var(--bg);
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .is-thinking::after { animation: none; }
+}

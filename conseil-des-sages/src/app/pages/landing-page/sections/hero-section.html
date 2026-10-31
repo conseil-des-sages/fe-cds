@@ -1,0 +1,26 @@
+<section class="hero" aria-labelledby="hero-title">
+  <div class="copy">
+    <h1 id="hero-title" class="display-xl">Le conseil débat. <span class="accent">Toi, tu tranches.</span></h1>
+    <p class="body-l lead">
+      Soumets un choix important (études, premier job, logement) à un conseil d’IA aux personnalités
+      opposées. Ils en débattent devant toi, puis te remettent une synthèse claire.
+    </p>
+    <div class="actions">
+      <a routerLink="/connexion" class="cds-btn cds-btn--primary">
+        Réunir le conseil
+        <app-icon name="arrow-right" />
+      </a>
+      <a routerLink="/landing-page" fragment="comment-ca-marche" class="cds-btn">Voir comment ça marche</a>
+    </div>
+  </div>
+
+  <div class="art">
+    <app-council-ring class="council" [sages]="sages" [activeId]="active().id" label="Les sages du conseil de base">
+      <figure class="cds-glass cds-glass--strong bubble" [style.--sage]="'var(--sage-' + active().color + ')'">
+        <figcaption class="cds-label">{{ question }}</figcaption>
+        <p class="heading-3 who">{{ active().name }}</p>
+        <p class="body line" aria-live="polite">{{ line() }}</p>
+      </figure>
+    </app-council-ring>
+  </div>
+</section>

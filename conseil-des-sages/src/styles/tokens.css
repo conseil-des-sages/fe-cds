@@ -1,0 +1,167 @@
+/* Tokens du design system « Conseil des Sages » (généré depuis tokens.json).
+   Les composants utilisent uniquement les tokens de rôle, jamais les nuances brutes. */
+:root,
+[data-theme='dark'] {
+  color-scheme: dark;
+
+  --primary-50: #faf5ff;
+  --primary-100: #f3e8ff;
+  --primary-200: #e9d5ff;
+  --primary-300: #d8b4fe;
+  --primary-400: #c084fc;
+  --primary-500: #a855f7;
+  --primary-600: #9333ea;
+  --primary-700: #7e22ce;
+  --primary-800: #6b21a8;
+  --primary-900: #581c87;
+  --primary-950: #3b0764;
+  --secondary-50: #f0f9ff;
+  --secondary-100: #e0f2fe;
+  --secondary-200: #bae6fd;
+  --secondary-300: #7dd3fc;
+  --secondary-400: #38bdf8;
+  --secondary-500: #0ea5e9;
+  --secondary-600: #0284c7;
+  --secondary-700: #0369a1;
+  --secondary-800: #075985;
+  --secondary-900: #0c4a6e;
+  --secondary-950: #082f49;
+  --tertiary-50: #ecfdf5;
+  --tertiary-100: #d1fae5;
+  --tertiary-200: #a7f3d0;
+  --tertiary-300: #6ee7b7;
+  --tertiary-400: #34d399;
+  --tertiary-500: #10b981;
+  --tertiary-600: #059669;
+  --tertiary-700: #047857;
+  --tertiary-800: #065f46;
+  --tertiary-900: #064e3b;
+  --tertiary-950: #022c22;
+  --neutral-50: #f5f6fb;
+  --neutral-100: #e6e8f2;
+  --neutral-200: #c9cce0;
+  --neutral-300: #a3a8c4;
+  --neutral-400: #7c82a6;
+  --neutral-500: #5a6088;
+  --neutral-600: #3f456e;
+  --neutral-700: #2a2f55;
+  --neutral-800: #1c2040;
+  --neutral-900: #121530;
+  --neutral-950: #0a0c1b;
+
+  --bg: var(--neutral-950);
+  --orb-1: rgba(192, 132, 252, 0.45);
+  --orb-2: rgba(56, 189, 248, 0.35);
+  --orb-3: rgba(52, 211, 153, 0.25);
+  --glass: rgba(255, 255, 255, 0.06);
+  --glass-strong: rgba(18, 21, 48, 0.72);
+  --glass-hover: rgba(255, 255, 255, 0.1);
+  --glass-border: rgba(255, 255, 255, 0.14);
+  --hairline: rgba(255, 255, 255, 0.1);
+  --scrim: rgba(10, 12, 27, 0.55);
+
+  --ink: var(--neutral-50);
+  --ink-muted: var(--neutral-300);
+  --ink-subtle: #8a90b2;
+  --accent: var(--primary-400);
+  --on-accent: var(--neutral-950);
+  --accent-text: var(--primary-300);
+  --focus-ring: var(--primary-300);
+  --info: var(--secondary-400);
+  --success: var(--tertiary-400);
+  --warning: #fbbf24;
+  --danger: #fb7185;
+
+  --sage-prudent: var(--secondary-400);
+  --sage-optimiste: #fbbf24;
+  --sage-financier: var(--tertiary-400);
+  --sage-avocat: #fb7185;
+  --sage-futur: var(--primary-400);
+  /* Couleurs supplémentaires pour les sages créés par les joueurs (≥ 4.5:1 sur le fond) */
+  --sage-cyan: #22d3ee;
+  --sage-orange: #fb923c;
+  --sage-indigo: #a5b4fc;
+
+  --shadow-float: 0 8px 32px rgba(0, 0, 0, 0.35);
+  --shadow-lift: 0 16px 48px rgba(0, 0, 0, 0.45);
+  --glow-accent: 0 0 32px rgba(192, 132, 252, 0.45);
+}
+
+[data-theme='light'] {
+  color-scheme: light;
+
+  --bg: var(--neutral-50);
+  --orb-1: rgba(192, 132, 252, 0.4);
+  --orb-2: rgba(56, 189, 248, 0.32);
+  --orb-3: rgba(52, 211, 153, 0.28);
+  --glass: rgba(255, 255, 255, 0.55);
+  --glass-strong: rgba(255, 255, 255, 0.82);
+  --glass-hover: rgba(255, 255, 255, 0.7);
+  --glass-border: rgba(255, 255, 255, 0.7);
+  --hairline: rgba(10, 12, 27, 0.1);
+  --scrim: rgba(245, 246, 251, 0.55);
+
+  --ink: var(--neutral-950);
+  --ink-muted: var(--neutral-600);
+  --ink-subtle: var(--neutral-500);
+  --accent: var(--primary-400);
+  --on-accent: var(--neutral-950);
+  --accent-text: var(--primary-700);
+  --focus-ring: var(--primary-600);
+  --info: var(--secondary-700);
+  --success: var(--tertiary-700);
+  --warning: #b45309;
+  --danger: #be123c;
+
+  --sage-prudent: var(--secondary-700);
+  --sage-optimiste: #b45309;
+  --sage-financier: var(--tertiary-700);
+  --sage-avocat: #be123c;
+  --sage-futur: var(--primary-700);
+  --sage-cyan: #0e7490;
+  --sage-orange: #c2410c;
+  --sage-indigo: #4338ca;
+
+  --shadow-float: 0 8px 32px rgba(42, 47, 85, 0.12);
+  --shadow-lift: 0 16px 48px rgba(42, 47, 85, 0.18);
+  --glow-accent: 0 0 24px rgba(147, 51, 234, 0.3);
+}
+
+:root {
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-12: 48px;
+  --space-16: 64px;
+
+  --radius-sm: 10px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+  --radius-xl: 32px;
+  --radius-full: 9999px;
+
+  --blur-sm: 12px;
+  --blur-md: 20px;
+  --blur-lg: 32px;
+  --blur-orb: 80px;
+
+  --font-display: 'Fraunces', Georgia, serif;
+  --font-sans: 'Manrope', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+
+  /* Hauteur réservée à la navbar flottante */
+  --nav-offset: 5.5rem;
+  --radius: var(--radius-sm);
+
+  /* Échelles de la navbar : mêmes valeurs fluides que son menu mobile */
+  --fs-tiny: 0.75rem;
+  --fs-small: 0.875rem;
+  --fs-medium: 1.125rem;
+  --fs-large: clamp(1.5rem, 7vw, 2rem);
+  --fs-display: clamp(2.75rem, 13vw, 5rem);
+}

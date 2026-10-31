@@ -1,0 +1,47 @@
+<button
+  type="button"
+  class="card"
+  [class.is-selected]="selected()"
+  [class.is-static]="preview()"
+  [style.--sage]="'var(--sage-' + sage().color + ')'"
+  [attr.aria-pressed]="preview() ? null : selected()"
+  [attr.tabindex]="preview() ? -1 : null"
+  [disabled]="disabled() && !selected()"
+  (click)="toggled.emit(sage().id)"
+>
+  <span class="top">
+    <app-sage-avatar
+      [icon]="sage().icon"
+      [color]="sage().color"
+      [size]="48"
+      [state]="selected() ? 'selected' : 'idle'"
+      [decorative]="true"
+    />
+    <span class="ident">
+      <span class="heading-3 name">{{ sage().name || 'Nom du sage' }}</span>
+      <span class="caption meta">
+        {{ originLabel() }}
+        @if (sage().shared && sage().origin === 'mine') {
+          · partagé
+        }
+      </span>
+    </span>
+  </span>
+  <span class="body description">{{ sage().description || 'Sa description apparaîtra ici.' }}</span>
+  @if (!preview()) {
+    <span class="caption foot">
+      @if (sage().uses) {
+        <span class="uses"><app-icon name="users" [size]="16" />{{ sage().uses | number: '1.0-0' : 'fr' }}</span>
+      }
+      <span class="state">
+        @if (selected()) {
+          <app-icon name="check" [size]="16" [stroke]="2.5" /> Dans le conseil
+        } @else if (disabled()) {
+          Conseil complet
+        } @else {
+          <app-icon name="plus" [size]="16" [stroke]="2.25" /> Ajouter
+        }
+      </span>
+    </span>
+  }
+</button>

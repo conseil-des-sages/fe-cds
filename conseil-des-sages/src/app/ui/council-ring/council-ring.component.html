@@ -1,0 +1,42 @@
+<ul #seatList class="seats" [attr.aria-label]="label()">
+  @for (seat of seats(); track seat.sage.id) {
+    <li
+      class="seat"
+      [style.--left.%]="seat.left"
+      [style.--top.%]="seat.top"
+      [attr.aria-current]="seat.state === 'speaking' ? 'true' : null"
+    >
+      <ng-template #face>
+        <app-sage-avatar
+          [icon]="seat.sage.icon"
+          [color]="seat.sage.color"
+          [name]="seat.sage.name"
+          [size]="avatarSize()"
+          [state]="seat.state"
+          [decorative]="true"
+        />
+        <span class="cds-avatar-name" [class.is-dim]="seat.state === 'dimmed'">{{ seat.sage.shortName }}</span>
+      </ng-template>
+
+      @if (notes(); as allNotes) {
+        <button
+          type="button"
+          class="seat-button"
+          [attr.aria-label]="'Revoir ce qu’a dit ' + seat.sage.name"
+          (click)="seatOpened.emit(seat.sage.id)"
+        >
+          <ng-container [ngTemplateOutlet]="face" />
+        </button>
+        <div class="popover" [attr.data-side]="seat.side">
+          <div class="cds-glass cds-glass--strong popover-card cds-scroll" tabindex="-1">
+            <p class="heading-3 popover-name" [style.color]="'var(--sage-' + seat.sage.color + ')'">{{ seat.sage.name }}</p>
+            <app-seat-notes [notes]="allNotes[seat.sage.id] ?? []" />
+          </div>
+        </div>
+      } @else {
+        <ng-container [ngTemplateOutlet]="face" />
+      }
+    </li>
+  }
+</ul>
+<div class="center"><ng-content /></div>

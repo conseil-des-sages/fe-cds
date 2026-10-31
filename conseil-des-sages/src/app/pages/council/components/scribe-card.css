@@ -1,0 +1,103 @@
+:host {
+  display: block;
+  min-width: 0;
+}
+
+.card {
+  display: grid;
+  gap: var(--space-2);
+  width: 100%;
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-lg);
+  color: var(--ink);
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 0.4s var(--ease);
+}
+
+.card.is-speaking {
+  border-color: var(--sage);
+}
+
+.head {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.who {
+  display: grid;
+  min-width: 0;
+}
+
+.name {
+  color: var(--sage);
+  font-weight: 700;
+}
+
+.status {
+  color: var(--ink-subtle);
+}
+
+.note {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 4;
+  animation: appear 0.4s var(--ease);
+}
+
+@keyframes appear {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+
+.is-speaking .note {
+  -webkit-line-clamp: 8;
+}
+
+@media (max-width: 1359px) {
+  /* La place du bandeau reste réservée : quand il parle, il s'ouvre par-dessus sans décaler le débat */
+  :host {
+    position: relative;
+    min-height: 54px;
+  }
+  .card.is-speaking {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    z-index: 3;
+    box-shadow: var(--shadow-lift);
+  }
+  .card:not(.is-speaking) {
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: center;
+  }
+  .card {
+    padding: var(--space-2) var(--space-3);
+    border-radius: var(--radius-md);
+  }
+  /* Le bandeau montre sa dernière note, ou son statut tant qu'il n'a rien noté */
+  .card:not(.is-speaking) .head:not(:only-child) .who {
+    display: none;
+  }
+  .head:only-child {
+    grid-column: 1 / -1;
+  }
+  .card:not(.is-speaking) .note {
+    -webkit-line-clamp: 2;
+    font-size: 13px;
+    line-height: 18px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .note {
+    animation-name: fade;
+  }
+  @keyframes fade {
+    from { opacity: 0; }
+  }
+}

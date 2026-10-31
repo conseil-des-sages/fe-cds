@@ -65,6 +65,6 @@ export class ThemeProvider {
         }
         catch{
         }
-        return window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark'
+        return 'dark'
     }
 }

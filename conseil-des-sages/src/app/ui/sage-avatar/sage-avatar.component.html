@@ -1,0 +1,15 @@
+<span
+  class="cds-avatar"
+  [class.cds-avatar--speaking]="state() === 'speaking'"
+  [class.cds-avatar--dim]="state() === 'dimmed'"
+  [class.cds-avatar--sm]="size() <= 32"
+  [class.is-thinking]="state() === 'thinking'"
+  [class.is-selected]="state() === 'selected'"
+  [style.--sage]="colorVar()"
+  [style.--size]="'var(--avatar-size, ' + size() + 'px)'"
+>
+  <app-icon [name]="icon()" [size]="iconSize()" />
+  @if (state() === 'selected') {
+    <span class="tick"><app-icon name="check" [size]="12" [stroke]="3" /></span>
+  }
+</span>

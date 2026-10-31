@@ -1,6 +1,6 @@
 import { Component, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { BackdropComponent } from './ui/backdrop-components';
+import { BackdropComponent } from './ui/backdrop/backdrop.component';
 import { Navbar } from './components/navbar/navbar';
 
 @Component({

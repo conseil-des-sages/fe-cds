@@ -1,0 +1,94 @@
+/* Kit du design system (classes cds-*). Toutes les valeurs viennent des tokens. */
+
+/* ---------- Fond ---------- */
+.cds-stage { position: relative; overflow: hidden; background: var(--bg); color: var(--ink); font-family: var(--font-sans); isolation: isolate; }
+.cds-stage::before,
+.cds-stage::after,
+.cds-stage > .cds-orb { content: ''; position: absolute; z-index: -1; border-radius: var(--radius-full); filter: blur(var(--blur-orb)); pointer-events: none; }
+.cds-stage::before { width: 60%; aspect-ratio: 1; top: -25%; left: -15%; background: var(--orb-1); animation: cds-drift 48s var(--ease) infinite alternate; }
+.cds-stage::after { width: 50%; aspect-ratio: 1; top: 10%; right: -20%; background: var(--orb-2); animation: cds-drift 56s var(--ease) infinite alternate-reverse; }
+.cds-stage > .cds-orb { width: 45%; aspect-ratio: 1; bottom: -30%; left: 30%; background: var(--orb-3); }
+@keyframes cds-drift { to { transform: translate(6%, 8%) scale(1.05); } }
+
+/* ---------- Verre ---------- */
+.cds-glass { background: var(--glass); -webkit-backdrop-filter: blur(var(--blur-md)) saturate(140%); backdrop-filter: blur(var(--blur-md)) saturate(140%); border: 1px solid var(--glass-border); border-radius: var(--radius-lg); box-shadow: var(--shadow-float); }
+.cds-glass--light { -webkit-backdrop-filter: blur(var(--blur-sm)) saturate(140%); backdrop-filter: blur(var(--blur-sm)) saturate(140%); }
+.cds-glass--strong { background: var(--glass-strong); -webkit-backdrop-filter: blur(var(--blur-lg)) saturate(140%); backdrop-filter: blur(var(--blur-lg)) saturate(140%); }
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .cds-glass { background: var(--glass-strong); }
+}
+
+/* ---------- Boutons ---------- */
+.cds-btn { display: inline-flex; align-items: center; justify-content: center; gap: var(--space-2); height: 44px; padding: 0 var(--space-6); border-radius: var(--radius-full); font: 700 15px/1 var(--font-sans); white-space: nowrap; text-decoration: none; cursor: pointer; border: 1px solid var(--glass-border); background: var(--glass); color: var(--ink); transition: background 0.15s var(--ease), transform 0.15s var(--ease); }
+.cds-btn:hover { background: var(--glass-hover); }
+.cds-btn:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 2px; }
+.cds-btn--primary { background: var(--accent); color: var(--on-accent); border-color: transparent; box-shadow: var(--glow-accent); }
+.cds-btn--primary:hover { background: var(--accent); transform: translateY(-1px); }
+.cds-btn--ghost { background: transparent; border-color: transparent; color: var(--ink-muted); }
+.cds-btn--danger { color: var(--danger); }
+.cds-btn[disabled] { opacity: 0.45; cursor: not-allowed; box-shadow: none; transform: none; }
+.cds-btn--icon { width: 44px; flex-shrink: 0; padding: 0; justify-content: center; }
+.cds-btn--sm { height: 36px; padding: 0 var(--space-3); font-size: 14px; }
+
+/* ---------- Avatars ---------- */
+.cds-avatar { --size: 72px; --sage: var(--accent); position: relative; width: var(--size); height: var(--size); border-radius: var(--radius-full); display: grid; place-items: center; flex-shrink: 0; background: var(--glass-strong); border: 2px solid var(--sage); color: var(--sage); transition: transform 0.4s var(--ease), opacity 0.4s var(--ease), box-shadow 0.4s var(--ease); }
+.cds-avatar app-icon svg { width: calc(var(--size) * 0.42); height: calc(var(--size) * 0.42); }
+.cds-avatar--speaking { transform: scale(1.1); box-shadow: 0 0 0 6px color-mix(in srgb, var(--sage) 22%, transparent), 0 0 40px color-mix(in srgb, var(--sage) 55%, transparent); }
+.cds-avatar--dim { opacity: 0.55; }
+.cds-avatar--sm { --size: 28px; border-width: 1.5px; }
+.cds-avatar-name { font: 700 13px/18px var(--font-sans); color: var(--ink); text-align: center; margin-top: var(--space-2); }
+.cds-council { display: flex; align-items: center; }
+.cds-council .cds-avatar { margin-left: -6px; }
+.cds-council > :first-child .cds-avatar { margin-left: 0; }
+
+/* ---------- Étapes ---------- */
+.cds-steps { display: flex; align-items: center; gap: var(--space-2); padding: var(--space-3) var(--space-4); border-radius: var(--radius-full); }
+.cds-step { display: flex; align-items: center; gap: var(--space-2); font: 700 12px/16px var(--font-sans); letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-subtle); white-space: nowrap; }
+.cds-step__dot { width: 24px; height: 24px; flex-shrink: 0; border-radius: var(--radius-full); display: grid; place-items: center; border: 1.5px solid var(--hairline); font: 500 12px/1 var(--font-mono); }
+.cds-step--done { color: var(--ink-muted); }
+.cds-step--done .cds-step__dot { background: var(--success); border-color: var(--success); color: var(--bg); }
+.cds-step--active { color: var(--ink); }
+.cds-step--active .cds-step__dot { background: var(--accent); border-color: var(--accent); color: var(--on-accent); box-shadow: var(--glow-accent); }
+.cds-step__line { flex: 1; min-width: var(--space-6); height: 2px; border-radius: 2px; background: var(--hairline); }
+.cds-step__line--done { background: var(--success); }
+
+/* ---------- Petits éléments ---------- */
+.cds-metric { font: 500 28px/32px var(--font-mono); color: var(--ink); }
+.cds-label { font: 700 12px/16px var(--font-sans); letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-subtle); }
+.cds-chip { display: inline-flex; align-items: center; gap: var(--space-1); padding: 4px var(--space-3); border-radius: var(--radius-full); background: var(--glass); border: 1px solid var(--glass-border); font: 500 13px/18px var(--font-sans); color: var(--ink-muted); }
+
+/* ---------- Formulaires ---------- */
+.cds-field { display: grid; gap: var(--space-2); min-width: 0; border: 0; margin: 0; padding: 0; }
+.cds-field__label { font: 700 13px/18px var(--font-sans); color: var(--ink); }
+.cds-input { width: 100%; min-width: 0; min-height: 44px; padding: 10px var(--space-4); border: 1px solid color-mix(in srgb, var(--ink) 18%, transparent); border-radius: var(--radius-md); background: var(--glass); color: var(--ink); font: 400 15px/24px var(--font-sans); outline: none; transition: border-color 0.15s var(--ease); }
+.cds-input::placeholder { color: var(--ink-subtle); opacity: 1; }
+.cds-input:focus-visible { border-color: var(--accent); outline: 2px solid var(--focus-ring); outline-offset: 2px; }
+.cds-input[aria-invalid='true'] { border-color: var(--danger); }
+.cds-hint { font: 500 13px/18px var(--font-sans); color: var(--ink-subtle); }
+.cds-error { font: 500 13px/18px var(--font-sans); color: var(--danger); }
+select.cds-input option { background: var(--neutral-900); color: var(--neutral-50); }
+
+/* ---------- Sélecteur segmenté ---------- */
+.cds-segmented { display: inline-flex; gap: var(--space-1); padding: var(--space-1); border: 1px solid var(--hairline); border-radius: var(--radius-full); background: var(--glass); max-width: 100%; overflow-x: auto; }
+.cds-segmented button { min-height: 36px; padding: 0 var(--space-4); border: 0; border-radius: var(--radius-full); background: transparent; color: var(--ink-muted); font: 700 14px/1 var(--font-sans); white-space: nowrap; cursor: pointer; transition: background 0.15s var(--ease), color 0.15s var(--ease); }
+.cds-segmented button:hover { color: var(--ink); }
+.cds-segmented button[aria-selected='true'],
+.cds-segmented button[aria-checked='true'] { background: color-mix(in srgb, var(--ink) 12%, transparent); color: var(--ink); }
+
+/* ---------- Mise en page ---------- */
+.cds-page { min-height: 100dvh; padding: calc(var(--nav-offset) + var(--space-4)) var(--space-6) var(--space-12); }
+.cds-page__inner { width: min(100%, 1040px); margin-inline: auto; display: grid; gap: var(--space-6); }
+.cds-scroll { overflow-y: auto; scrollbar-width: thin; scrollbar-color: var(--ink-subtle) transparent; }
+
+@media (max-width: 767px) {
+  .cds-page { padding-inline: var(--space-4); padding-top: calc(var(--nav-offset) - var(--space-4)); }
+  .cds-steps { padding: var(--space-2) var(--space-3); }
+  .cds-step__line { min-width: var(--space-2); }
+  .cds-step:not(.cds-step--active) .cds-step__text { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cds-stage::before, .cds-stage::after { animation: none; }
+  .cds-avatar, .cds-btn { transition: opacity 0.25s; }
+  .cds-avatar--speaking { transform: none; }
+}

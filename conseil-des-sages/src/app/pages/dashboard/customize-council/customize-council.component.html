@@ -1,0 +1,44 @@
+@if (editing()) {
+  <div class="body-area">
+    <app-sage-form
+      [initial]="editedSage()"
+      [models]="store.models()"
+      [saving]="saving()"
+      (saved)="save($event)"
+      (cancelled)="editing.set(null)"
+    />
+    @if (error()) {
+      <p class="cds-error" role="alert">{{ error() }}</p>
+    }
+  </div>
+} @else {
+  <app-sage-picker
+    class="body-area"
+    [sages]="store.sages()"
+    [selectedIds]="draft()"
+    [full]="draft().length >= store.maxSages()"
+    [filter]="filter()"
+    (filterChange)="filter.set($event)"
+    (toggled)="toggle($event)"
+    (create)="editing.set('new')"
+    (edit)="editing.set($event)"
+    (remove)="remove($event)"
+  />
+
+  <footer class="foot">
+    <app-council-slots [sages]="selected()" [max]="store.maxSages()" (removed)="toggle($event)" />
+    <div class="actions">
+      @if (error()) {
+        <p class="cds-error" role="alert">{{ error() }}</p>
+      } @else if (store.saveFailed()) {
+        <p class="cds-error" role="alert">Ton conseil n’a pas pu être enregistré. Réessaie.</p>
+      } @else if (tooFew()) {
+        <p class="cds-hint">Il faut au moins {{ store.minSages() }} sages : ton dernier conseil reste en place.</p>
+      } @else {
+        <p class="cds-hint">Enregistré automatiquement</p>
+      }
+      <button type="button" class="cds-btn cds-btn--ghost" (click)="reset()">Réinitialiser</button>
+      <button type="button" class="cds-btn cds-btn--primary" (click)="done.emit()">Terminé</button>
+    </div>
+  </footer>
+}

@@ -1,0 +1,41 @@
+:host {
+  position: fixed;
+  right: var(--space-6);
+  bottom: var(--space-6);
+  z-index: 10;
+  display: block;
+  width: 280px;
+}
+
+.card {
+  padding: 20px var(--space-6);
+}
+
+.figure {
+  margin-top: var(--space-1);
+}
+
+.week {
+  margin-top: 2px;
+  color: var(--success);
+}
+
+.separator {
+  height: 1px;
+  margin: var(--space-4) 0;
+  background: var(--hairline);
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-top: 10px;
+}
+
+/* Le dashboard est une colonne de 720px : la carte n'a sa place que si l'écran la laisse libre */
+@media (max-width: 1279px) {
+  :host {
+    display: none;
+  }
+}

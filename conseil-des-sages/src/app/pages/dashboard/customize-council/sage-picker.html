@@ -1,0 +1,59 @@
+<div class="toolbar">
+  <div class="cds-segmented" role="tablist" aria-label="Filtrer les sages">
+    @for (item of filters; track item.id) {
+      <button type="button" role="tab" [attr.aria-selected]="filter() === item.id" (click)="filterChange.emit(item.id)">
+        {{ item.label }} ({{ countFor(item.id) }})
+      </button>
+    }
+  </div>
+  <div class="search">
+    <app-icon name="search" [size]="16" class="search-icon" />
+    <label class="sr-only" for="sage-search">Rechercher un sage</label>
+    <input
+      id="sage-search"
+      class="cds-input"
+      type="search"
+      placeholder="Rechercher un sage"
+      [value]="query()"
+      (input)="search($event)"
+    />
+  </div>
+  <button type="button" class="cds-btn" (click)="create.emit()">
+    <app-icon name="plus" [size]="16" />
+    Créer un sage
+  </button>
+</div>
+
+<div class="grid" role="tabpanel">
+  @for (sage of visible(); track sage.id) {
+    <div class="item">
+      <app-sage-card
+        class="item-card"
+        [sage]="sage"
+        [selected]="selectedIds().includes(sage.id)"
+        [disabled]="full()"
+        (toggled)="toggled.emit($event)"
+      />
+      @if (sage.origin === 'mine') {
+        <div class="item-actions">
+          <button type="button" class="cds-btn cds-btn--ghost cds-btn--sm" (click)="edit.emit(sage)">
+            <app-icon name="pencil" [size]="16" /> Modifier
+          </button>
+          <button type="button" class="cds-btn cds-btn--ghost cds-btn--sm cds-btn--danger" (click)="remove.emit(sage)">
+            <app-icon name="trash" [size]="16" /> Supprimer
+          </button>
+        </div>
+      }
+    </div>
+  } @empty {
+    <p class="body empty">
+      @if (query()) {
+        Aucun sage ne correspond à « {{ query() }} ».
+      } @else if (filter() === 'mine') {
+        Tu n’as pas encore créé de sage.
+      } @else {
+        Personne n’a encore partagé de sage.
+      }
+    </p>
+  }
+</div>

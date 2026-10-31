@@ -119,12 +119,18 @@ const ICONS: Record<string, LucideIcon> = {
   selector: 'app-icon',
   imports: [LucideDynamicIcon],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  host: { 'aria-hidden': 'true', style: 'display:inline-flex;flex-shrink:0' },
+  host: { 'aria-hidden': 'true' },
   template: `<svg [lucideIcon]="icon()" [size]="size()" [strokeWidth]="stroke()" />`,
+  styles: `
+    :host {
+      display: inline-flex;
+      flex-shrink: 0;
+    }
+  `,
 })
 export class IconComponent {
   readonly name = input.required<string>();
   readonly size = input<number>(20);
-  readonly stroke = input<number>(1.75);
+  readonly stroke = input<number>(1.5);
   protected readonly icon = computed(() => ICONS[this.name()] ?? LucideCircleDot);
 }

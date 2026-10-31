@@ -1,0 +1,94 @@
+:host {
+  display: block;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  width: 100%;
+  height: 100%;
+  padding: var(--space-4);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-md);
+  background: var(--glass);
+  color: var(--ink);
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.15s var(--ease), border-color 0.15s var(--ease), transform 0.15s var(--ease);
+}
+
+.card:hover:not(:disabled, .is-static) {
+  background: var(--glass-hover);
+  transform: translateY(-1px);
+}
+
+.card.is-selected {
+  border-color: var(--sage);
+}
+
+.card:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.card.is-static {
+  cursor: default;
+}
+
+.top {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.ident {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+
+.name {
+  overflow-wrap: anywhere;
+}
+
+.meta,
+.foot {
+  color: var(--ink-subtle);
+}
+
+.description {
+  display: -webkit-box;
+  overflow: hidden;
+  color: var(--ink-muted);
+  overflow-wrap: anywhere;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+}
+
+.foot {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin-top: auto;
+}
+
+.uses,
+.state {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+.state {
+  margin-left: auto;
+  color: var(--ink-muted);
+}
+
+.is-selected .state {
+  color: var(--sage);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card:hover:not(:disabled, .is-static) { transform: none; }
+}

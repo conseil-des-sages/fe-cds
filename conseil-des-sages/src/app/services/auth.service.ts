@@ -4,7 +4,6 @@ import { Observable, catchError, finalize, map, of, shareReplay, tap, throwError
 
 const ACCESS_TOKEN_KEY = 'conseil-des-sages-access-token';
 const REFRESH_TOKEN_KEY = 'conseil-des-sages-refresh-token';
-const USER_NAME_KEY = 'conseil-des-sages-user-name';
 
 export interface AuthTokens {
   accessToken: string;
@@ -25,11 +24,9 @@ export class AuthService {
   private readonly http = inject(HttpClient);
   private readonly accessToken = signal(this.readToken(ACCESS_TOKEN_KEY));
   private readonly refreshToken = signal(this.readToken(REFRESH_TOKEN_KEY));
-  private readonly userName = signal(this.readToken(USER_NAME_KEY));
   private refreshRequest: Observable<AuthTokens> | null = null;
 
   readonly isAuthenticated = computed(() => !!this.accessToken());
-  readonly displayName = computed(() => this.userName() || '');
 
   login(credentials: Credentials): Observable<void> {
     return this.http.post<AuthTokens>('/api/auth/login', credentials).pipe(
@@ -40,10 +37,7 @@ export class AuthService {
 
   register(registration: Registration): Observable<void> {
     return this.http.post<AuthTokens>('/api/auth/register', registration).pipe(
-      tap((tokens) => {
-        this.saveTokens(tokens);
-        this.saveUserName(registration.name);
-      }),
+      tap((tokens) => this.saveTokens(tokens)),
       map(() => void 0),
     );
   }
@@ -90,8 +84,6 @@ export class AuthService {
     this.refreshToken.set(null);
     this.removeToken(ACCESS_TOKEN_KEY);
     this.removeToken(REFRESH_TOKEN_KEY);
-    this.userName.set(null);
-    this.removeToken(USER_NAME_KEY);
   }
 
   private saveTokens(tokens: AuthTokens): void {
@@ -99,11 +91,6 @@ export class AuthService {
     this.refreshToken.set(tokens.refreshToken);
     this.writeToken(ACCESS_TOKEN_KEY, tokens.accessToken);
     this.writeToken(REFRESH_TOKEN_KEY, tokens.refreshToken);
-  }
-
-  private saveUserName(name: string): void {
-    this.userName.set(name);
-    this.writeToken(USER_NAME_KEY, name);
   }
 
   private readToken(key: string): string | null {

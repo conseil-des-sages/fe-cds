@@ -1,0 +1,83 @@
+<article class="cds-glass cds-glass--strong panel cds-scroll" aria-labelledby="synthesis-title">
+  <p class="cds-label">Synthèse du Greffier</p>
+  <h2 id="synthesis-title" class="display-l verdict">{{ synthesis().verdict }}</h2>
+
+  @if (synthesis().criteria?.length && synthesis().options?.length) {
+    <section class="block">
+      <h3 class="heading-2">Les options, critère par critère</h3>
+      <div class="table-wrap">
+        <table class="scores">
+          <thead>
+            <tr>
+              <th scope="col" class="caption"><span class="sr-only">Critère</span></th>
+              @for (option of synthesis().options; track option) {
+                <th scope="col" class="heading-3">{{ option }}</th>
+              }
+            </tr>
+          </thead>
+          <tbody>
+            @for (criterion of synthesis().criteria; track criterion.label) {
+              <tr>
+                <th scope="row">
+                  <span class="heading-3">{{ criterion.label }}</span>
+                  @if (criterion.hint) {
+                    <span class="caption hint">{{ criterion.hint }}</span>
+                  }
+                </th>
+                @for (score of criterion.scores; track $index) {
+                  <td class="cds-metric">{{ score }}<span class="caption out-of"> / 10</span></td>
+                }
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+      <p class="caption scale-note">
+        Chaque option est notée de 0 à 10 indépendamment des autres : les notes ne s’additionnent pas.
+        Ce sont des appréciations du Greffier, pas des mesures.
+      </p>
+    </section>
+  }
+
+  <div class="columns">
+    @if (synthesis().consensus?.length) {
+      <section class="block">
+        <h3 class="heading-2">Ce sur quoi ils s’accordent</h3>
+        <ul class="list">
+          @for (item of synthesis().consensus; track item) {
+            <li class="body">{{ item }}</li>
+          }
+        </ul>
+      </section>
+    }
+    @if (synthesis().disagreements?.length) {
+      <section class="block">
+        <h3 class="heading-2">Là où ils divergent</h3>
+        <ul class="list">
+          @for (item of synthesis().disagreements; track item.topic) {
+            <li class="body"><strong>{{ item.topic }}.</strong> {{ item.detail }}</li>
+          }
+        </ul>
+      </section>
+    }
+  </div>
+
+  @if (synthesis().openQuestions?.length) {
+    <section class="block">
+      <h3 class="heading-2">Les questions qui te restent</h3>
+      <ul class="list">
+        @for (item of synthesis().openQuestions; track item) {
+          <li class="body">{{ item }}</li>
+        }
+      </ul>
+    </section>
+  }
+
+  <div class="foot">
+    <p class="caption note">
+      Le conseil t’aide à réfléchir, il ne décide pas. Pour la santé, le droit ou une grosse somme,
+      demande aussi l’avis d’un·e professionnel·le.
+    </p>
+    <a routerLink="/app" class="cds-btn cds-btn--primary">Soumettre une autre décision</a>
+  </div>
+</article>

@@ -1,0 +1,163 @@
+:host {
+  position: relative;
+  display: block;
+}
+
+.seats {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  pointer-events: none;
+}
+
+.seat {
+  position: absolute;
+  left: var(--left);
+  top: var(--top);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: max-content;
+  transform: translate(-50%, calc(var(--avatar-size, var(--avatar)) / -2));
+  pointer-events: auto;
+}
+
+.cds-avatar-name {
+  transition: opacity 0.4s var(--ease);
+}
+
+.seat-button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-md);
+  background: none;
+  color: inherit;
+  cursor: pointer;
+}
+
+/* La bulle reste ouverte quand on y amène la souris : sa marge transparente fait le pont avec l'avatar */
+.popover {
+  position: absolute;
+  z-index: 1;
+  display: none;
+  width: 340px;
+}
+
+.popover[data-side='left'] {
+  top: 0;
+  right: 100%;
+  padding-right: var(--space-2);
+}
+
+.popover[data-side='right'] {
+  top: 0;
+  left: 100%;
+  padding-left: var(--space-2);
+}
+
+.popover[data-side='below'] {
+  top: 100%;
+  left: 50%;
+  padding-top: var(--space-2);
+  transform: translateX(-50%);
+}
+
+.popover[data-side='above'] {
+  bottom: 100%;
+  left: 50%;
+  padding-bottom: var(--space-2);
+  transform: translateX(-50%);
+}
+
+.popover-card {
+  display: grid;
+  gap: var(--space-2);
+  max-height: 280px;
+  padding: var(--space-4);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lift);
+  text-align: left;
+}
+
+.popover-name {
+  margin: 0;
+}
+
+/* Sans souris ou sur mobile, un appui ouvre la popup à la place */
+@media (hover: hover) and (min-width: 768px) {
+  .seat:hover,
+  .seat:focus-within {
+    z-index: 3;
+  }
+  .seat:hover .popover,
+  .seat:focus-within .popover {
+    display: block;
+  }
+}
+
+.is-dim {
+  opacity: 0.55;
+}
+
+.center {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  min-height: 0;
+  pointer-events: none;
+}
+
+.center > * {
+  pointer-events: auto;
+}
+
+/* Sur mobile, le cercle devient une rangée d'avatars au-dessus du contenu */
+@media (max-width: 767px) {
+  :host {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+    min-width: 0;
+    min-height: 0;
+  }
+  .seats {
+    position: static;
+    display: flex;
+    gap: var(--space-1);
+    justify-content: safe center;
+    max-width: 100%;
+    overflow-x: auto;
+    padding: var(--space-3) var(--space-1);
+    scrollbar-width: none;
+  }
+  .seat {
+    --avatar-size: 48px;
+    position: static;
+    transform: none;
+    flex-shrink: 0;
+    width: 64px;
+  }
+  .seat-button {
+    width: 100%;
+  }
+  .cds-avatar-name {
+    max-width: 100%;
+    overflow: hidden;
+    font-size: 12px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .center {
+    position: static;
+    flex: 1;
+    min-width: 0;
+  }
+}
