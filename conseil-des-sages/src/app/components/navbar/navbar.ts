@@ -3,6 +3,7 @@ import { DOCUMENT } from '@angular/common';
 import { afterNextRender, Component, DestroyRef, effect, inject, signal } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { LucideMenu, LucideX, LucideArrowUpRight } from '@lucide/angular';
+import { AuthService } from '../../services/auth.service';
 import { ThemeToggle } from '../theme-toggle/theme-toggle';
 
 @Component({
@@ -14,6 +15,7 @@ import { ThemeToggle } from '../theme-toggle/theme-toggle';
 })
 export class Navbar {
   private readonly router = inject(Router);
+  protected readonly auth = inject(AuthService);
   private readonly doc = inject(DOCUMENT);
   private readonly destroyRef = inject(DestroyRef);
 
@@ -30,6 +32,13 @@ export class Navbar {
 
   protected toggle() { this.open.update((v) => !v); }
   protected close()  { this.open.set(false); }
+
+  protected logout() {
+    this.auth.logout().subscribe(() => {
+      this.close();
+      void this.router.navigateByUrl('/landing-page');
+    });
+  }
 
   constructor() {
     // Bloque le défilement de la page quand le menu est ouvert

@@ -16,7 +16,11 @@
 
     <div class="flex-1 flex flex-row justify-end items-center gap-4" [style.--i]="links.length">
         <app-theme-toggle></app-theme-toggle>
-        <button type="button" z-button routerLink="/connexion" (click)="close()" class="text-tiny uppercase tracking-[0.12em]"> Connexion <svg lucideArrowUpRight class="size-4" aria-hidden="true"></svg></button>
+        @if (auth.isAuthenticated()) {
+          <button type="button" z-button (click)="logout()" class="text-tiny uppercase tracking-[0.12em]">Déconnexion</button>
+        } @else {
+          <button type="button" z-button routerLink="/connexion" (click)="close()" class="text-tiny uppercase tracking-[0.12em]"> Connexion <svg lucideArrowUpRight class="size-4" aria-hidden="true"></svg></button>
+        }
     </div>
     </div>
   </div>
@@ -70,7 +74,11 @@
             <div class="line cta mt-8 inset-0 w-full" [style.--i]="links.length">
                 <div class="line__inner flex flex-row justify-between items-center">
                     <h2 class="eyebrow text-tiny">Mon compte</h2>
-                    <button type="button" z-button routerLink="/connexion" (click)="close()" class="text-tiny uppercase tracking-[0.12em]"> Connexion <svg lucideArrowUpRight class="size-4" aria-hidden="true"></svg></button>
+                    @if (auth.isAuthenticated()) {
+                      <button type="button" z-button (click)="logout()" class="text-tiny uppercase tracking-[0.12em]">Déconnexion</button>
+                    } @else {
+                      <button type="button" z-button routerLink="/connexion" (click)="close()" class="text-tiny uppercase tracking-[0.12em]"> Connexion <svg lucideArrowUpRight class="size-4" aria-hidden="true"></svg></button>
+                    }
                 </div>
             </div>
 
